@@ -136,7 +136,7 @@ public class ScopeStack {
 
     //数组
     public void addSymbol(String name,SymbolType type,SymbolKind kind,int size,List<Integer> valueList){
-        ArraySymbol symbol=new ArraySymbol(name,size,type,kind,scopeLevel,scopeNum);
+        ArraySymbol symbol=new ArraySymbol(name,size,type,kind,scopeLevel,scopeNum,valueList);
         addSymbol(symbol);
     }
     public void addSymbol(String name,SymbolType type,int paramNum,List<Symbol> paramList){

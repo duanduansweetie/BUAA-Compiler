@@ -1,11 +1,11 @@
 package node;
-import symbol.ArraySymbol;
-import symbol.BasicSymbol;
-import symbol.Symbol;
-import symbol.ScopeStack;
 import java.io.IOException;
 import lexer.LexerType;
 import parser.Parser;
+import symbol.ArraySymbol;
+import symbol.BasicSymbol;
+import symbol.ScopeStack;
+import symbol.Symbol;
 public class LValNode extends Node{
     // LVal → Ident ['[' Exp ']']
     public final String name="<LVal>";

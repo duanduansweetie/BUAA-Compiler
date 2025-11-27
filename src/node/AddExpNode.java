@@ -1,10 +1,9 @@
 package node;
 
-import lexer.LexerType;
-import parser.Parser;
-
 import java.io.IOException;
 import java.util.List;
+import lexer.LexerType;
+import parser.Parser;
 
 public class AddExpNode extends Node {
     public final String name = "<AddExp>";
@@ -41,17 +40,17 @@ public class AddExpNode extends Node {
             Parser.parseWriter.write(name + "\n");
         }
     }
-public int calculate(){
-    int result=mulExpNodeList.get(0).calculate();
-    for(int i=1;i<addOpList.size();i++){
-        if(addOpList.get(i-1).equals("+")){
-            result+=mulExpNodeList.get(i+1).calculate();
-        }else{
-            result-=mulExpNodeList.get(i+1).calculate();
+    public int calculate(){
+        int result=mulExpNodeList.get(0).calculate();
+        for(int i=1;i<mulExpNodeList.size();i++){
+            if(addOpList.get(i-1).equals("+")){
+                result+=mulExpNodeList.get(i).calculate();
+            }else{
+                result-=mulExpNodeList.get(i).calculate();
+            }
         }
+        return result;
     }
-    return result;
-}
 public boolean canCalculate() {
     for (MulExpNode mulExpNode : mulExpNodeList) {
         if (!mulExpNode.canCalculate()) {
