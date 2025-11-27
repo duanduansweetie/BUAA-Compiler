@@ -1,5 +1,25 @@
-@test = dso_local global i32 0
-@.str.0 = dso_local constant [13 x i8] c"Hello World\0A\00"
+@globalVar = dso_local global i32 0
+@var6 = dso_local global i32 0
+@globalVar1 = dso_local global i32 0
+@globalVar2 = dso_local global i32 0
+@vec = dso_local global [10 x i32]zeroinitializer
+@vec1 = dso_local global [10 x i32][i32 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0, i32 0]
+@const0 = dso_local constant i32 0
+@const12 = dso_local constant [2 x i32][i32 1, i32 2]
+@const3 = dso_local constant i32 3
+@var.static.0 = dso_local global i32 0
+@vars.static.1 = dso_local global [10 x i32]zeroinitializer
+@var2.static.2 = dso_local global i32 0
+@sum.static.3 = dso_local global i32 0
+@.str.0 = dso_local constant [10 x i8] c"22376286\0A\00"
+@.str.1 = dso_local constant [2 x i8] c"\0A\00"
+@.str.2 = dso_local constant [11 x i8] c"globalVar=\00"
+@.str.3 = dso_local constant [17 x i8] c"calculateFunc()=\00"
+@.str.4 = dso_local constant [15 x i8] c"declareFunc()=\00"
+@.str.5 = dso_local constant [3 x i8] c"0\0A\00"
+@.str.6 = dso_local constant [3 x i8] c"1\0A\00"
+@.str.7 = dso_local constant [3 x i8] c"2\0A\00"
+@.str.8 = dso_local constant [6 x i8] c"sum1=\00"
 
 declare i32 @getint()
 declare i32 @getchar()
@@ -7,13 +27,385 @@ declare void @putint(i32)
 declare void @putch(i32)
 declare void @putstr(i8*)
 
+define dso_local void @declareFunc() {
+zty0:
+  %zty1 = alloca i32
+  %zty2 = alloca i32
+  store i32 1, i32* %zty2
+  %zty4 = alloca i32
+  store i32 1, i32* @var.static.0
+  %zty6 = getelementptr inbounds [10 x i32], [10 x i32]* @vars.static.1, i32 0, i32 0
+  %zty7 = load i32, i32* @const0
+  store i32 %zty7, i32* %zty6
+  ret void
+}
+
+define dso_local i32 @shortPath(i32 %zty0) {
+zty1:
+  %zty2 = alloca i32
+  store i32 %zty0, i32* %zty2
+  %zty4 = load i32, i32* @sum.static.3
+  %zty5 = add i32 %zty4, 1
+  store i32 %zty5, i32* @sum.static.3
+  %zty7 = load i32, i32* @sum.static.3
+  ret i32 %zty7
+}
+
+define dso_local i32 @caculateFunc(i32 %zty0, i32 %zty1, i32* %zty2) {
+zty3:
+  %zty4 = alloca i32
+  store i32 %zty0, i32* %zty4
+  %zty6 = alloca i32
+  store i32 %zty1, i32* %zty6
+  %zty8 = alloca i32*
+  store i32* %zty2, i32** %zty8
+  %zty10 = load i32, i32* %zty4
+  %zty11 = load i32, i32* %zty6
+  %zty12 = icmp sgt i32 %zty10, %zty11
+  %zty13 = zext i1 %zty12 to i32
+  %zty14 = icmp ne i32 %zty13, 0
+  br i1 %zty14, label %zty16, label %zty19
+zty16:
+  ret i32 0
+  br label %zty19
+zty19:
+  %zty20 = load i32, i32* %zty4
+  %zty21 = load i32, i32* %zty6
+  %zty22 = icmp ne i32 %zty20, %zty21
+  br i1 %zty22, label %zty24, label %zty27
+zty24:
+  ret i32 0
+  br label %zty27
+zty27:
+  %zty28 = load i32, i32* %zty4
+  %zty29 = load i32*, i32** %zty8
+  %zty30 = getelementptr inbounds i32, i32* %zty29, i32 0
+  %zty31 = load i32, i32* %zty30
+  %zty32 = icmp ne i32 %zty28, %zty31
+  br i1 %zty32, label %zty34, label %zty40
+zty34:
+  %zty35 = load i32*, i32** %zty8
+  %zty36 = getelementptr inbounds i32, i32* %zty35, i32 0
+  %zty37 = load i32, i32* %zty36
+  ret i32 %zty37
+  br label %zty40
+zty40:
+  %zty41 = alloca i32
+  store i32 0, i32* %zty41
+  br label %zty56
+zty44:
+  %zty45 = load i32, i32* %zty6
+  ret i32 %zty45
+zty47:
+  %zty48 = load i32, i32* %zty6
+  %zty49 = icmp eq i32 %zty48, 0
+  br i1 %zty49, label %zty63, label %zty65
+zty51:
+  %zty52 = load i32, i32* %zty41
+  %zty53 = add i32 %zty52, 1
+  store i32 %zty53, i32* %zty41
+  br label %zty56
+zty56:
+  %zty57 = load i32, i32* %zty41
+  %zty58 = load i32, i32* %zty4
+  %zty59 = icmp sle i32 %zty57, %zty58
+  %zty60 = zext i1 %zty59 to i32
+  %zty61 = icmp ne i32 %zty60, 0
+  br i1 %zty61, label %zty47, label %zty44
+zty63:
+  br label %zty44
+zty65:
+  %zty66 = load i32*, i32** %zty8
+  %zty67 = getelementptr inbounds i32, i32* %zty66, i32 0
+  %zty68 = load i32, i32* %zty67
+  %zty69 = icmp ne i32 %zty68, 0
+  br i1 %zty69, label %zty73, label %zty78
+zty71:
+  br label %zty65
+zty73:
+  br label %zty51
+zty75:
+  %zty76 = icmp ne i32 0, 0
+  br i1 %zty76, label %zty88, label %zty85
+zty78:
+  %zty79 = icmp ne i32 1, 0
+  br i1 %zty79, label %zty73, label %zty75
+zty81:
+  br label %zty75
+zty83:
+  br label %zty44
+zty85:
+  %zty86 = icmp ne i32 1, 0
+  br i1 %zty86, label %zty95, label %zty99
+zty88:
+  %zty89 = load i32, i32* %zty4
+  %zty90=call i32 @shortPath(i32 %zty89)
+  %zty91 = icmp ne i32 %zty90, 0
+  br i1 %zty91, label %zty83, label %zty85
+zty93:
+  br label %zty85
+zty95:
+  br label %zty44
+zty97:
+  br label %zty51
+zty99:
+  %zty100 = load i32, i32* %zty6
+  %zty101=call i32 @shortPath(i32 %zty100)
+  %zty102 = icmp ne i32 %zty101, 0
+  br i1 %zty102, label %zty95, label %zty97
+zty104:
+  br label %zty97
+}
+
+define dso_local i32 @sum(i32* %zty0, i32 %zty1) {
+zty2:
+  %zty3 = alloca i32*
+  store i32* %zty0, i32** %zty3
+  %zty5 = alloca i32
+  store i32 %zty1, i32* %zty5
+  %zty7 = alloca i32
+  store i32 0, i32* %zty7
+  %zty9 = alloca i32
+  %zty10 = alloca i32
+  store i32 0, i32* %zty9
+  br label %zty32
+zty13:
+  %zty14 = icmp sgt i32 1, 2
+  %zty15 = zext i1 %zty14 to i32
+  %zty16 = icmp ne i32 %zty15, 0
+  br i1 %zty16, label %zty39, label %zty41
+zty18:
+  %zty19 = load i32, i32* %zty7
+  %zty20 = load i32*, i32** %zty3
+  %zty21 = load i32, i32* %zty9
+  %zty22 = getelementptr inbounds i32, i32* %zty20, i32 %zty21
+  %zty23 = load i32, i32* %zty22
+  %zty24 = add i32 %zty19, %zty23
+  store i32 %zty24, i32* %zty7
+  br label %zty27
+zty27:
+  %zty28 = load i32, i32* %zty9
+  %zty29 = add i32 %zty28, 1
+  store i32 %zty29, i32* %zty9
+  br label %zty32
+zty32:
+  %zty33 = load i32, i32* %zty9
+  %zty34 = load i32, i32* %zty5
+  %zty35 = icmp slt i32 %zty33, %zty34
+  %zty36 = zext i1 %zty35 to i32
+  %zty37 = icmp ne i32 %zty36, 0
+  br i1 %zty37, label %zty18, label %zty13
+zty39:
+  br label %zty53
+zty41:
+  %zty42 = load i32, i32* %zty7
+  ret i32 %zty42
+zty44:
+  br label %zty62
+zty46:
+  br label %zty48
+zty48:
+  %zty49 = load i32, i32* %zty9
+  %zty50 = add i32 %zty49, 1
+  store i32 %zty50, i32* %zty9
+  br label %zty53
+zty53:
+  %zty54 = load i32, i32* %zty9
+  %zty55 = load i32, i32* %zty5
+  %zty56 = icmp slt i32 %zty54, %zty55
+  %zty57 = zext i1 %zty56 to i32
+  %zty58 = icmp ne i32 %zty57, 0
+  br i1 %zty58, label %zty46, label %zty44
+zty60:
+  br label %zty72
+zty62:
+  br label %zty64
+zty64:
+  %zty65 = load i32, i32* %zty9
+  %zty66 = add i32 %zty65, 1
+  store i32 %zty66, i32* %zty9
+  br label %zty62
+zty69:
+  store i32 0, i32* %zty9
+  br label %zty78
+zty72:
+  br label %zty74
+zty74:
+  br label %zty72
+zty76:
+  br label %zty92
+zty78:
+  br label %zty80
+zty80:
+  %zty81 = load i32, i32* %zty9
+  %zty82 = add i32 %zty81, 1
+  store i32 %zty82, i32* %zty9
+  br label %zty78
+zty85:
+  store i32 0, i32* %zty9
+  br label %zty106
+zty88:
+  br label %zty90
+zty90:
+  br label %zty92
+zty92:
+  %zty93 = load i32, i32* %zty9
+  %zty94 = load i32, i32* %zty5
+  %zty95 = icmp slt i32 %zty93, %zty94
+  %zty96 = zext i1 %zty95 to i32
+  %zty97 = icmp ne i32 %zty96, 0
+  br i1 %zty97, label %zty88, label %zty85
+zty99:
+  store i32 0, i32* %zty9
+  br label %zty117
+zty102:
+  br label %zty104
+zty104:
+  br label %zty106
+zty106:
+  %zty107 = load i32, i32* %zty9
+  %zty108 = load i32, i32* %zty5
+  %zty109 = icmp slt i32 %zty107, %zty108
+  %zty110 = zext i1 %zty109 to i32
+  %zty111 = icmp ne i32 %zty110, 0
+  br i1 %zty111, label %zty102, label %zty99
+zty113:
+  store i32 0, i32* %zty9
+  store i32 0, i32* %zty10
+  br label %zty126
+zty117:
+  br label %zty119
+zty119:
+  br label %zty117
+zty121:
+  %zty122 = icmp sgt i32 1, 2
+  %zty123 = zext i1 %zty122 to i32
+  %zty124 = icmp ne i32 %zty123, 0
+  br i1 %zty124, label %zty130, label %zty140
+zty126:
+  br label %zty128
+zty128:
+  br label %zty126
+zty130:
+  br label %zty132
+zty132:
+  store i32 1, i32* %zty9
+  store i32 -1, i32* %zty9
+  %zty135 = add i32 1, 1
+  %zty136 = sub i32 0, %zty135
+  store i32 %zty136, i32* %zty9
+  store i32 1, i32* %zty9
+  br label %zty41
+zty140:
+  br label %zty132
+}
+
 define dso_local i32 @main() {
 zty0:
-  zty1 = getelementptr inbounds [13 x i8], [13 x i8]* @.str.0, i32 0, i32 0
-  call void @putstr(i8* zty1)
-  zty2=call i32 @getint()
-  store i32 zty2, i32* @test
-  zty4 = load i32, i32* @test
-  call void @putint(i32 zty4)
+  %zty1 = getelementptr inbounds [10 x i8], [10 x i8]* @.str.0, i32 0, i32 0
+  call void @putstr(i8* %zty1)
+  %zty2 = alloca i32
+  store i32 0, i32* %zty2
+  %zty4 = alloca [2 x i32]
+  %zty5 = getelementptr inbounds [2 x i32], [2 x i32]* %zty4, i32 0, i32 0
+  store i32 1, i32* %zty5
+  %zty7 = getelementptr inbounds [2 x i32], [2 x i32]* %zty4, i32 0, i32 1
+  store i32 2, i32* %zty7
+  %zty9 = alloca i32
+  store i32 3, i32* %zty9
+  %zty11 = alloca i32
+  %zty12 = alloca i32
+  %zty13 = alloca i32
+  %zty14 = icmp ne i32 1, 0
+  br i1 %zty14, label %zty16, label %zty29
+zty16:
+  store i32 1, i32* %zty11
+  br label %zty19
+zty19:
+  %zty20 = load i32, i32* %zty2
+  %zty21 = mul i32 %zty20, 1
+  %zty22 = srem i32 %zty21, 4
+  %zty23 = sdiv i32 %zty22, 2
+  call void @putint(i32 %zty23)
+  %zty24 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty24)
+  %zty25 = icmp sge i32 1, 2
+  %zty26 = zext i1 %zty25 to i32
+  %zty27 = icmp ne i32 %zty26, 0
+  br i1 %zty27, label %zty32, label %zty45
+zty29:
+  %zty30 = icmp ne i32 1, 0
+  br i1 %zty30, label %zty16, label %zty19
+zty32:
+  %zty33 = alloca i32
+  %zty34 = load i32, i32* @globalVar
+  %zty35 = getelementptr inbounds [2 x i32], [2 x i32]* %zty4, i32 0, i32 1
+  %zty36 = load i32, i32* %zty35
+  %zty37 = srem i32 %zty36, 44
+  %zty38 = add i32 42, %zty37
+  %zty39 = mul i32 %zty34, %zty38
+  %zty40 = add i32 32, 2
+  %zty41 = sub i32 %zty40, 1
+  %zty42 = add i32 %zty41, %zty39
+  store i32 %zty42, i32* %zty33
+  br label %zty45
+zty45:
+  %zty46 = alloca i32
+  store i32 2342, i32* %zty46
+  %zty48 = alloca i32
+  store i32 2323, i32* %zty48
+  %zty50 = alloca [2 x i32]
+  %zty51 = getelementptr inbounds [2 x i32], [2 x i32]* %zty50, i32 0, i32 0
+  store i32 10, i32* %zty51
+  %zty53 = getelementptr inbounds [2 x i32], [2 x i32]* %zty50, i32 0, i32 1
+  store i32 10, i32* %zty53
+  %zty55 = alloca i32
+  store i32 1, i32* %zty55
+  %zty57 = getelementptr inbounds [2 x i32], [2 x i32]* %zty50, i32 0, i32 0
+  %zty58=call i32 @sum(i32* %zty57, i32 2)
+  store i32 %zty58, i32* %zty55
+  %zty60 = load i32, i32* @globalVar
+  %zty61 = getelementptr inbounds [11 x i8], [11 x i8]* @.str.2, i32 0, i32 0
+  call void @putstr(i8* %zty61)
+  call void @putint(i32 %zty60)
+  %zty62 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty62)
+  %zty63 = load i32, i32* @globalVar1
+  %zty64 = getelementptr inbounds [11 x i8], [11 x i8]* @.str.2, i32 0, i32 0
+  call void @putstr(i8* %zty64)
+  call void @putint(i32 %zty63)
+  %zty65 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty65)
+  %zty66 = alloca i32
+  store i32 1, i32* %zty66
+  %zty68 = load i32, i32* %zty46
+  %zty69 = load i32, i32* %zty48
+  %zty70 = getelementptr inbounds [2 x i32], [2 x i32]* %zty50, i32 0, i32 0
+  %zty71=call i32 @caculateFunc(i32 %zty68, i32 %zty69, i32* %zty70)
+  store i32 %zty71, i32* %zty66
+  %zty73 = load i32, i32* %zty66
+  %zty74 = getelementptr inbounds [17 x i8], [17 x i8]* @.str.3, i32 0, i32 0
+  call void @putstr(i8* %zty74)
+  call void @putint(i32 %zty73)
+  %zty75 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty75)
+  call void @declareFunc()
+  %zty76 = getelementptr inbounds [15 x i8], [15 x i8]* @.str.4, i32 0, i32 0
+  call void @putstr(i8* %zty76)
+  call void @putint(i32 0)
+  %zty77 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty77)
+  %zty78 = getelementptr inbounds [3 x i8], [3 x i8]* @.str.5, i32 0, i32 0
+  call void @putstr(i8* %zty78)
+  %zty79 = getelementptr inbounds [3 x i8], [3 x i8]* @.str.6, i32 0, i32 0
+  call void @putstr(i8* %zty79)
+  %zty80 = getelementptr inbounds [3 x i8], [3 x i8]* @.str.7, i32 0, i32 0
+  call void @putstr(i8* %zty80)
+  %zty81 = load i32, i32* %zty55
+  %zty82 = getelementptr inbounds [6 x i8], [6 x i8]* @.str.8, i32 0, i32 0
+  call void @putstr(i8* %zty82)
+  call void @putint(i32 %zty81)
+  %zty83 = getelementptr inbounds [2 x i8], [2 x i8]* @.str.1, i32 0, i32 0
+  call void @putstr(i8* %zty83)
   ret i32 0
 }

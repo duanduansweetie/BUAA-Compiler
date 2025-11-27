@@ -470,8 +470,15 @@ public class Parser {
         if (!errorManager.hasError)
             function = irBuilder.buildFunction(funcDefNode);
         scopeStack.exitScope();
-        if (!errorManager.hasError)
-            irBuilder.buildFunctionBody(blockNode, function);
+        if (!errorManager.hasError) {
+            List<String> paramNames = new ArrayList<>();
+            if (funcFParamsNode != null) {
+                for (FuncFParamNode node : funcFParamsNode.getFuncFParamsNodes()) {
+                    paramNames.add(node.getIdentNode());
+                }
+            }
+            irBuilder.buildFunctionBody(blockNode, function, paramNames);
+        }
         return funcDefNode;
     }
     public MainFuncDefNode parseMainFuncDef(){
@@ -526,8 +533,9 @@ public class Parser {
         if (!errorManager.hasError)
             function = irBuilder.buildMainFunction();
         scopeStack.exitScope();
-        if (!errorManager.hasError)
-            irBuilder.buildFunctionBody(blockNode, function);
+        if (!errorManager.hasError) {
+            irBuilder.buildFunctionBody(blockNode, function, new ArrayList<>());
+        }
         MainFuncDefNode mainFuncDefNode=new MainFuncDefNode(blockNode);
         return mainFuncDefNode;
     }
@@ -1033,12 +1041,14 @@ public class Parser {
             }
             LValNode lValNode= new LValNode(ident, expNode);
             lValNode.setLineno(linenum);
+            lValNode.setScopeStack(scopeStack);
             return lValNode;
         }
         else{
 
             LValNode lValNode= new LValNode(ident);
             lValNode.setLineno(linenum);
+            lValNode.setScopeStack(scopeStack);
             return lValNode;
         }
     }

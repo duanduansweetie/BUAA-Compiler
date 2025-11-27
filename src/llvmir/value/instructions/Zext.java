@@ -14,7 +14,7 @@ public class Zext extends Instruction {
 
     @Override
     public String toString() {
-        return name + " = zext " + operands.get(0).getType() + " " +
-                this.getFirstOperand().getName() + " to i32";
+        return getPrintName() + " = zext " + operands.get(0).getType() + " " +
+                this.getFirstOperand().getPrintName() + " to i32";
     }
 }

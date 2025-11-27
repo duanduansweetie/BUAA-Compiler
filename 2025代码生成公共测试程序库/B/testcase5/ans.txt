@@ -1,0 +1,6 @@
+sum is 2
+19373022
+b:-6
+Bool1 is false!
+13
+Oh!?

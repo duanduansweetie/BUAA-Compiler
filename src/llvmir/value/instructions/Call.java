@@ -1,9 +1,9 @@
 package llvmir.value.instructions;
+import java.util.List;
 import llvmir.value.Value;
 import llvmir.value.structure.BasicBlock;
 import llvmir.value.structure.Function;
 import llvmir.value.structure.Instruction;
-import java.util.List;
 public class Call extends Instruction{
     // 无参数的函数调用
     public Call(Value function, BasicBlock basicBlock) {
@@ -27,12 +27,12 @@ public class Call extends Instruction{
         StringBuilder sb=new StringBuilder();
         Function func=(Function)operands.get(0);
         if(!(func.getType().isVoidType())){
-            sb.append(name+"=");
+            sb.append(getPrintName()+"=");
         }
         sb.append("call "+this.getType()+" ");
-        sb.append(func.getName()).append("(");
+        sb.append(func.getPrintName()).append("(");
         for(int i=1;i<operands.size();i++){
-            sb.append(operands.get(i).getType()).append(" ").append(operands.get(i).getName());
+            sb.append(operands.get(i).getType()).append(" ").append(operands.get(i).getPrintName());
             if(i!=operands.size()-1){
                 sb.append(", ");
             }

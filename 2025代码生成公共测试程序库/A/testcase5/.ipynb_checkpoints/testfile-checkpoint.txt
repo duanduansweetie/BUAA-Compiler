@@ -1,0 +1,70 @@
+const int a = 2, b[3] = {1, 2, 3};
+int arr1[3] = {1};
+int c = b[a];
+
+int getNumber(){
+    static int x = 0;
+    x = x + 1;
+    if( x==1 || x==2 || x==3 || x==4){
+        printf("bingo\n");
+    }
+    return getint();
+}
+
+int min(int a, int b, int flag){
+    if(flag && a > b){
+        return b;
+    }else if(a > b){
+        return 0;
+    }else return a;
+
+    return 0;
+}
+int max(int a, int b, int flag){
+    if(flag && a < b){
+        return b;
+    }else if(a < b){
+        return 0;
+    }else return b;
+    return 0;
+}
+
+int fib(int x){
+    if(x==1 || x==0)return 1;
+    return fib(x-1) + fib(x-2);
+}
+
+int func0(){
+    c = c + 1;
+    return 1;
+}
+int main(){
+    printf("hello bingo test\n");
+    int p1 = getNumber();
+    static int p2 = b[c-1];
+    arr1[1] = p2 * 2 + 3 - a*b[a] + c/3*3;
+    ;
+    222;
+    static int p3 = 1;
+    p3 = min(p1, 2, 1);
+    p3 = max(min(p1, 2, 1), max(1, 2, 0), 0);
+    printf("p3 is %d\n", p3);
+    int fib_test = fib(4) + min(fib(2), p1, 1);
+    printf("fib_test is %d\n", fib_test);
+
+    if(0 && func0() == 1){
+        printf("no here\n");
+    }
+    if(c==3 || func0()){
+        printf("right here\n");
+        printf("c should be 3, and your answer is %d\n", c);
+    }
+    for(c = 2; c == 2 && func0() == 1 || func0() > 1; c = c + 1){
+        printf("only for once and c should be print as 3, your c is %d\n", c);
+    }
+    if(c==4 || func0() == 1){
+        printf("here c should be 6, and your c is %d\n", c);
+    }
+
+    return 0;
+}

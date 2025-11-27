@@ -27,4 +27,17 @@ public class Value {
         this.type = type;
     }
 
+    public String getPrintName() {
+        if (name == null) {
+            return "null";
+        }
+        if (name.startsWith("@") || name.startsWith("%")) {
+            return name;
+        }
+        if (name.length() > 0 && (Character.isDigit(name.charAt(0)) || name.startsWith("-"))) {
+            return name;
+        }
+        return "%" + name;
+    }
+
 }

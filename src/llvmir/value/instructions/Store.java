@@ -14,7 +14,7 @@ public class Store extends Instruction {
 
     @Override
     public String toString() {
-        return "store " + operands.get(0).getType() + " " + operands.get(0).getName() + ", " +
-                operands.get(0).getType() + "* " + operands.get(1).getName();
+        return "store " + operands.get(0).getType() + " " + operands.get(0).getPrintName() + ", " +
+                operands.get(0).getType() + "* " + operands.get(1).getPrintName();
     }
 }

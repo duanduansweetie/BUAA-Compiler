@@ -1,5 +1,4 @@
 package llvmir.value.instructions;
-import java.util.List;
 import llvmir.type.PointType;
 import llvmir.type.Type;
 import llvmir.value.structure.BasicBlock;
@@ -27,6 +26,6 @@ public class Alloca extends Instruction{
     }
     @Override
     public String toString() {
-        return name + " = alloca " + allocType;
+        return getPrintName() + " = alloca " + allocType;
     }
 }

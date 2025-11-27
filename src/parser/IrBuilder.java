@@ -27,6 +27,7 @@ public class IrBuilder {
     Stack<BasicBlock> nextBlockStack = new Stack<>();
     Stack<BasicBlock> forStmtBlockStack = new Stack<>();
     int stringIndex = 0;
+    private int staticVarIndex=0;
     public IrBuilder(Module module, ScopeStack scopeStack) {
         this.module = module;
         this.scopeStack = scopeStack;
@@ -147,17 +148,27 @@ public void buildGlobalVariable(ConstDeclNode constDeclNode){
         }
         return  params;
     }
-    public void buildFunctionBody(BlockNode blockNode, Function function){
+    public void buildFunctionBody(BlockNode blockNode, Function function, List<String> paramNames){
         currentBlock=new BasicBlock(function);
         currentFunction=function;
         inGlobal=false;
         scopeStack.addSymbolTable(blockNode.symbolTableIndex);
         List<Param> params=function.getParams();
-        for(int i=0;i<params.size();i++){
+        int size = Math.min(params.size(), paramNames.size());
+        for(int i=0;i<size;i++){
             Param param=params.get(i);
+            String originalName = paramNames.get(i); // [关键] 使用源代码中的名字 (如 "a")
+
             Alloca alloca=new Alloca(param.getType(),currentBlock,true);
             currentBlock.addInstruction(alloca);
-            scopeStack.lookup(param.getName()).setValue(alloca);
+            symbol.Symbol symbol = scopeStack.lookup(originalName);
+            if (symbol != null) {
+                symbol.setValue(alloca);
+            } else {
+                System.err.println("Error: Parameter '" + param.getName() + "' in function '" + function.getName() + "' not found in symbol table.");
+                System.err.println("Debug: Current Scope ID restored: " + blockNode.symbolTableIndex);
+                System.err.println("Hint: Parser likely passed the Parent Scope ID instead of the Function Scope ID to BlockNode.");
+            }
             Store store=new Store(param,alloca,currentBlock);
             currentBlock.addInstruction(store);
         }
@@ -205,7 +216,7 @@ public void buildGlobalVariable(ConstDeclNode constDeclNode){
         for(String string:segments){
             if(string.equals("%d")){
                 Function function=new Function("putint",new VoidType());
-                if(values.get(0).getType() instanceof Integer8Type)
+                if(values.get(0).getType() instanceof Integer8Type || values.get(0).getType() instanceof Integer1Type)
                 {
                     Zext zext = new Zext(values.get(0), currentBlock);
                     currentBlock.addInstruction(zext);
@@ -350,7 +361,7 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
             EqExpNode eqExpNode=lAndExpNode.getEqExpNodeList().get(i);
             nextBlock=new BasicBlock(currentFunction);
           Value value=buildEqExp(eqExpNode);
-            Br br=new Br(trueBlock,nextBlock,value,currentBlock);
+            Br br=new Br(nextBlock,falseBlock,value,currentBlock);
             currentBlock.addInstruction(br);
             currentBlock=nextBlock;
         }
@@ -548,8 +559,13 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
                     // 当然ConstExp 中还可以使用数值常量，字符常量。
                     buildConstant(declNode.getConstDeclNode());
                 } else {
-                    // 处理变量声明
-                    buildVariable(declNode.getVarDeclNode());
+                    VarDeclNode varDeclNode = declNode.getVarDeclNode();
+                    // 修改这里：判断是否为静态变量
+                    if (varDeclNode.isStatic()) {
+                        buildStaticVariable(varDeclNode);
+                    } else {
+                        buildVariable(varDeclNode);
+                    }
                 }
             } else {
                 // 处理语句
@@ -600,6 +616,61 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
                 // ((ArraySymbol) scopeStack.lookup(name))
                 // .setValueList(constDefNode.getConstInitValNode().calculateArray());
             }
+        }
+    }
+    // 新增方法：构建静态变量（包括静态整型和静态数组）
+    public void buildStaticVariable(VarDeclNode varDeclNode) {
+        VType vType = VType.VARIABLE; // 静态变量本质是变量，但存储在全局数据区
+        Type irType;
+        Value value;
+        BTypeNode bTypeNode = varDeclNode.getbTypeNode();
+        List<VarDefNode> varDefList = varDeclNode.getVarDefNodeList();
+
+        for (VarDefNode varDefNode : varDefList) {
+            // 1. 获取原始变量名
+            String originalName = varDefNode.getIdentNode();
+
+            // 2. 生成 LLVM IR 中的唯一名称，防止冲突
+            // 格式示例: @a.static.1
+            String uniqueName = originalName + ".static." + (staticVarIndex++);
+
+            // 3. 确定类型和初始值
+            // 注意：静态变量通常要求使用常量表达式初始化，或者默认初始化为0
+            if (bTypeNode.getType().equals("int") && varDefNode.isArray()) {
+                // 静态数组
+                irType = new IntArrayType(varDefNode.getConstExpNode().calculate());
+                if (varDefNode.getInitValNode() != null) {
+                    // 有初始化：计算常量数组值
+                    // 注意：这里假设静态变量初始化必须是常量表达式（符合SysY/C标准）
+                    // 如果你的语言允许动态初始化静态变量，逻辑会复杂很多（需要在main入口插入store指令）
+                    value = new ConstantArray(varDefNode.calculateArray(), varDefNode.getConstExpNode().calculate());
+                } else {
+                    // 无初始化：默认为0
+                    value = new ConstantArray(new ArrayList<>(), varDefNode.getConstExpNode().calculate()); // 这里的构造函数可能需要支持生成全0数组
+                    // 如果你的ConstantArray不支持自动补0，你需要手动创建一个全0的List
+                }
+            } else {
+                // 静态整型
+                irType = new Integer32Type();
+                if (varDefNode.getInitValNode() != null) {
+                    // 有初始化
+                    value = new ConstantInt(varDefNode.calculate());
+                } else {
+                    // 无初始化：默认为0
+                    value = new ConstantInt(0);
+                }
+            }
+
+            // 4. 创建 GlobalVariable 对象
+            // 虽然是局部静态变量，但在 LLVM IR 中它是 GlobalVariable
+            GlobalVariable gv = new GlobalVariable(uniqueName, irType, vType, value);
+
+            // 5. 添加到 Module (而不是 CurrentBlock)
+            module.addGlobalVariable(gv);
+
+            // 6. 注册到当前符号表 (ScopeStack)
+            // 这样后续在函数体内引用该变量时，lookup 到的就是这个 GlobalVariable
+            scopeStack.lookup(originalName).setValue(gv);
         }
     }
     public void buildVariable(VarDeclNode varDeclNode) {
@@ -792,9 +863,12 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
     public Value buildLVal(LValNode lValNode) {
         // 先找到这个变量，再根据这个变量的Value进行操作
         String name = lValNode.getIdentNode();
-        Value value = scopeStack.lookup(name).getValue();
+        symbol.Symbol symbol = scopeStack.lookup(name);
+        Value value = (symbol != null) ? symbol.getValue() : null;
+
         if (value == null) {
-            value = scopeStack.lookupBefore(name).getValue();
+            symbol = scopeStack.lookupBefore(name);
+            value = (symbol != null) ? symbol.getValue() : null;
         }
         if (lValNode.getExpNode() != null) {
             // 数组元素

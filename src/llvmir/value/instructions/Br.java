@@ -16,12 +16,12 @@ public class Br extends Instruction{
     @Override
     public String toString(){
         if(operands.size()==1){
-            return "br label %" + operands.get(0).getName();
+            return "br label " + operands.get(0).getPrintName();
         }
         else {
-            return "br i1 " + operands.get(2).getName() + ", label %" +
-                    operands.get(0).getName() + ", label %" +
-                    operands.get(1).getName();
+            return "br i1 " + operands.get(2).getPrintName() + ", label " +
+                    operands.get(0).getPrintName() + ", label " +
+                    operands.get(1).getPrintName();
         }
     }
 }

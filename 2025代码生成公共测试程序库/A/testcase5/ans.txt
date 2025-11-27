@@ -1,0 +1,8 @@
+hello bingo test
+bingo
+p3 is 0
+fib_test is 7
+right here
+c should be 3, and your answer is 3
+only for once and c should be print as 3, your c is 3
+here c should be 6, and your c is 6

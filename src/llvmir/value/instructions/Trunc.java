@@ -13,8 +13,8 @@ public class Trunc extends Instruction {
 
     @Override
     public String toString() {
-        return name + " = trunc " + operands.get(0).getType() + " " +
-                this.getFirstOperand().getName() + " to i8";
+        return getPrintName() + " = trunc " + operands.get(0).getType() + " " +
+                this.getFirstOperand().getPrintName() + " to i8";
     }
 
 }

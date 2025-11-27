@@ -1,9 +1,9 @@
 package llvmir.value.instructions;
 
+import llvmir.type.PointType;
 import llvmir.value.Value;
 import llvmir.value.structure.BasicBlock;
 import llvmir.value.structure.Instruction;
-import llvmir.type.PointType;
 
 public class Load extends Instruction {
 
@@ -14,6 +14,6 @@ public class Load extends Instruction {
 
     @Override
     public String toString() {
-        return name + " = load " + this.getType() + ", " + operands.get(0).getType() + " " + operands.get(0).getName();
+        return getPrintName() + " = load " + this.getType() + ", " + operands.get(0).getType() + " " + operands.get(0).getPrintName();
     }
 }

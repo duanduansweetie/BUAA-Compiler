@@ -1,0 +1,46 @@
+/*
+求[a,b](5≤a<b≤100,000,000)（一亿）间的所有回文质数
+来自洛谷 https://www.luogu.com.cn/problem/P1217
+ */
+
+// #include<stdio.h>
+
+int isSymmetry(int x) {
+	int copy = x, res = 0;
+	for(; copy!= 0;){
+        res = res * 10 + copy % 10;
+        copy = copy / 10;
+	}
+	if (res == x) return 1;
+	return 0;
+}
+
+int isPrime(int x) {
+    int i = 2;
+	for (; i * i <= x; i = i + 1) {
+		if (x % i == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int main() {
+    int a = getint();
+    int b = getint();
+    int i = a;
+
+	for (; i <= b; i = i + 1) {
+		if (i == 2) { // 2 是回文质数
+			printf("2\n");
+			continue;
+		} else if (i % 2 == 0) { // 偶数不是回文质数
+			continue;
+		} else if(isSymmetry(i)) {
+			if (isPrime(i)) {
+				printf("%d\n", i);
+			}
+		}
+	}
+	return 0;
+}

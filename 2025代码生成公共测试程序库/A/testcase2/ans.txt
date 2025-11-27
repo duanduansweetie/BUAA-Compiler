@@ -1,0 +1,10 @@
+22376286
+0
+globalVar=0
+globalVar=0
+calculateFunc()=0
+declareFunc()=0
+0
+1
+2
+sum1=20

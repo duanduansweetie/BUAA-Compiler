@@ -42,4 +42,7 @@ public class ArraySymbol extends Symbol{
             return "UnknownArrayType";
         }
     }
+    public int getValue(int index){
+        return valueList.get(index);
+    }
 }

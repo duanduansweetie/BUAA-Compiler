@@ -1,0 +1,39 @@
+22373340
+00if 1 condition
+if 1 condition
+if 1 condition
+if 1 else
+if 1 else
+if 1 else
+You should see this
+continue test
+The 1 time run for
+The 2 time run for
+The 3 time run for
+The 4 time run for
+The 5 time run for
+The 6 time run for
+The 7 time run for
+The 8 time run for
+The 9 time run for
+break test
+test fot const array:1 8 11
+crsb
+1 crsb
+1 crsb
+1 114 crsb
+1 1 crsb
+Should be seen in ||
+0 Shouldn't be seen
+Should in continue step(1) with complex condition
+2 Shouldn't be seen
+3 Shouldn't be seen
+4 Shouldn't be seen
+5 Shouldn't be seen
+6 Shouldn't be seen
+7 Shouldn't be seen
+8 Shouldn't be seen
+9 Shouldn't be seen
+10 Shouldn't be seen
+250
+12

@@ -50,8 +50,16 @@ public class LValNode extends Node{
         Parser.parseWriter.write(name+"\n");
     }
     public int calculate(){
-        int res=((BasicSymbol)(scopeStack.lookup(identNode))).getValueNum();
-        return res;
+        Symbol symbol = scopeStack.lookup(identNode);
+        if (symbol instanceof BasicSymbol) {
+            return ((BasicSymbol) symbol).getValueNum();
+        } else if (symbol instanceof ArraySymbol) {
+            if (expNode != null) {
+                int index = expNode.calculate();
+                return ((ArraySymbol) symbol).getValue(index);
+            }
+        }
+        throw new RuntimeException("Cannot calculate value for " + identNode);
     }
     public boolean isMayArray(){
         return expNode==null;
@@ -64,7 +72,7 @@ public class LValNode extends Node{
             }
         }
         else if(symbol instanceof ArraySymbol){
-            if(((ArraySymbol) symbol).isCanCal() && expNode.canCalculate()){
+            if(((ArraySymbol) symbol).isCanCal() && expNode != null && expNode.canCalculate()){
                 return true;
             }
         }

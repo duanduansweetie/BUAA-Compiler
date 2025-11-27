@@ -14,7 +14,7 @@ public class Ret extends Instruction {
     public String toString() {
         if (operands.size() == 0 || operands.get(0) == null)
             return "ret void";
-        return "ret " + operands.get(0).getType() + " " + operands.get(0).getName();
+        return "ret " + operands.get(0).getType() + " " + operands.get(0).getPrintName();
     }
 
 }

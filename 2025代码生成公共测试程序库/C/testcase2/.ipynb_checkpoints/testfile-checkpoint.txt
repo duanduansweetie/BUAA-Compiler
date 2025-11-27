@@ -1,0 +1,42 @@
+
+int g_default;
+int g_var = 20;
+const int G_CON1 = 10 * 20 + 1 * 3 / 1;
+
+int factorial(int n) {
+    if (n < 0) {
+        printf("error: n = %d < 0\n", n);
+        return 0;
+    }
+    if (n == 0) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+
+int map(int num) {
+    static int map_cnt;
+    map_cnt = map_cnt + 1;
+    return (31 + num + map_cnt) * 5 % 17;
+}
+
+void meow() {
+    printf("meow~ meow~\n");
+}
+
+int main() {
+    //out1
+    printf("23371015\n");
+
+    int k = 0;
+    for (; k < 7; k = k + 1) {
+        printf("%d\n", k);
+    }
+
+    //out9 0
+    printf("%d\n", g_default);
+    //out10
+    printf("test finished!\n");
+    return 0;
+}

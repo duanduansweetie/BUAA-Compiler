@@ -30,8 +30,8 @@ public class Icmp extends Instruction{
 
     @Override
     public String toString() {
-        return name + " = icmp " + opMap.get(op) + " " + operands.get(0).getType() + " " + operands.get(0).getName()
+        return getPrintName() + " = icmp " + opMap.get(op) + " " + operands.get(0).getType() + " " + operands.get(0).getPrintName()
                 + ", "
-                + operands.get(1).getName();
+                + operands.get(1).getPrintName();
     }
 }

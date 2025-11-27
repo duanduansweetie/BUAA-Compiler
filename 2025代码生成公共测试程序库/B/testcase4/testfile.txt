@@ -1,0 +1,52 @@
+/*
+多重背包的二进制优化
+取自ACWing第5题
+*/
+
+// #include<stdio.h>
+
+const int maxn = 200004;
+int N, V;
+int sum = 1;
+int dp[2003];
+
+int max(int a, int b) {
+	if(a > b) return a;
+	return b;
+}
+
+int main() {
+	N = getint();
+	V = getint();
+	int i,j;
+	int v[maxn], w[maxn];
+
+	for (i = 1; i <= N; i = i + 1) {
+		int a = getint(); // 体积
+		int b = getint(); // 价值
+		int c = getint(); // 数量
+
+		// 二进制优化
+		for(j = 1; j <= c; j = j * 2){
+			v[sum] = j * a;
+			w[sum] = j * b;
+			sum = sum + 1;
+			c = c - j;
+		}
+
+		if(c){ // 剩余
+			v[sum] = c * a;
+			w[sum] = c * b;
+			sum = sum + 1;
+		}
+	}
+
+	for (i = 1; i <= sum; i = i + 1 ) {
+		for (j = V; j >= v[i]; j = j - 1) {
+			dp[j] = max(dp[j], dp[j - v[i]] + w[i]);
+		}
+	}
+
+	printf("%d", dp[V]);
+	return 0;
+}

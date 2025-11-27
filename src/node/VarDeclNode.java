@@ -15,6 +15,9 @@ public class VarDeclNode extends Node{
         this.bTypeNode = bTypeNode;
         this.varDefNodeList=varDefNodeList;
     }
+    public boolean isStatic() {
+        return isStatic;
+    }
     public BTypeNode getbTypeNode() {
         return bTypeNode;
     }

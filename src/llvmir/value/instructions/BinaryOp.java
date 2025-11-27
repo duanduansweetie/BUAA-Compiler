@@ -19,6 +19,12 @@ public class BinaryOp extends Instruction{
     }
     Map<String,String> opMap=new HashMap<String,String>(){
         {
+             // 算术运算
+            put("+", "add");
+            put("-", "sub");
+            put("*", "mul");
+            put("/", "sdiv"); // 有符号除法
+            put("%", "srem"); // 有符号取模
             put("add","add");
             put("sub","sub");
             put("mul","mul");
@@ -30,7 +36,7 @@ public class BinaryOp extends Instruction{
     };
     @Override
     public String toString() {
-        return name + " = " + opMap.get(op) + " " + this.getType() + " " + operands.get(0).getName() + ", "
-                + operands.get(1).getName();
+        return getPrintName() + " = " + opMap.get(op) + " " + this.getType() + " " + operands.get(0).getPrintName() + ", "
+                + operands.get(1).getPrintName();
     }
 }
