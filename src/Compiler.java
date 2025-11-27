@@ -1,19 +1,23 @@
 import error.ErrorManager;
 import java.io.IOException;
 import lexer.LexerAnalyzer;
+import parser.IrBuilder;
 import parser.Parser;
 import parser.SymbolBuilder;
 import symbol.ScopeStack;
-
+import llvmir.value.structure.Module;
+import llvmir.Printer;
 public class Compiler{
     public static void main(String[] args) throws IOException{
         ErrorManager errorManager = new ErrorManager();
-
+        Module module=new Module();
         LexerAnalyzer lexer = new LexerAnalyzer(errorManager);
         ScopeStack scopeStack=new ScopeStack(errorManager);
-        SymbolBuilder symbolBuilder=new SymbolBuilder(scopeStack,errorManager);
-        Parser parser = new Parser(errorManager,scopeStack,symbolBuilder);
+        IrBuilder irBuilder=new IrBuilder(module,scopeStack);
+        SymbolBuilder symbolBuilder=new SymbolBuilder(scopeStack,errorManager,irBuilder);
+        Parser parser = new Parser(errorManager,scopeStack,symbolBuilder,irBuilder);
          errorManager.setScopeStack(scopeStack);
+         Printer printer=new Printer(module);
         //词法分析
         try {
             lexer.init("testfile.txt", "lexer.txt");
@@ -39,6 +43,19 @@ public class Compiler{
         errorManager.writeErrorsToFile("error.txt");
         //errorManager.showErrors();
     }catch(IOException e){
-        e.printStackTrace();}
+        e.printStackTrace();
     }
+        //中间代码生成
+        try {
+            Printer.initBuffer("llvm_ir.txt");
+            Printer.showIr();
+            Printer.closeBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 }

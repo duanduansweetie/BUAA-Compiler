@@ -27,7 +27,9 @@ public class PrimaryExpNode extends Node{
     public ExpNode getExpNode() {
         return expNode;
     }
-
+    public int getNumber() {
+        return numberNode.calculate();
+    }
     public NumberNode getNumberNode() {
         return numberNode;
     }

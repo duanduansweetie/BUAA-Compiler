@@ -42,4 +42,7 @@ public class ConstDefNode extends Node{
         constInitValNode.show();
         Parser.parseWriter.write(name+"\n");
     }
+    public boolean isArray() {
+        return constExpNode != null;
+    }
 }

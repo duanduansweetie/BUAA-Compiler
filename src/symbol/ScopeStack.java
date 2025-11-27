@@ -54,19 +54,29 @@ public class ScopeStack {
             System.out.println("Exiting scope: " + map.getScopenum());
         }
     }
-
+    // [新增] 弹出栈顶并保存到历史列表
+    public void popSymbolTable() {
+        if (!scopeStack.isEmpty()) {
+            symbolMapList.add(scopeStack.pop());
+        }
+    }
     // 将一个符号表添加到栈中
-    public void addSymbolTable(int num){
-        SymbolMap map=null;
-        for(SymbolMap sm:scopeStack){
-            if(sm.getScopenum()==num){
-                map=sm;
-                break;
+    // [新增] 辅助方法：从历史列表中查找符号表
+    public SymbolMap getSymbolTableFromList(int num) {
+        for (SymbolMap table : symbolMapList) {
+            if (table.getScopenum() == num) {
+                return table;
             }
         }
-        if(map!=null){
-            scopeStack.push(map);
-            symbolMapList.remove(map);
+        return null;
+    }
+
+    // [修改] 从历史列表中恢复符号表到栈顶
+    public void addSymbolTable(int num){
+        SymbolMap map = getSymbolTableFromList(num); // 从 List 中找，而不是 scopeStack
+        if(map != null){
+            symbolMapList.remove(map); // 从历史记录移除
+            scopeStack.push(map);      // 压入当前栈
         }
     }
     
@@ -117,8 +127,9 @@ public class ScopeStack {
         addSymbol(symbol);
     }
 
-    public void addSymbol(String name,SymbolType type,SymbolKind kind,int value){
-        BasicSymbol symbol=new BasicSymbol(name,type,kind,scopeLevel,scopeNum);
+    public void addSymbol(String name, SymbolType type, SymbolKind kind, int value){
+        // 修正：传入 value
+        BasicSymbol symbol = new BasicSymbol(name, type, kind, scopeLevel, scopeNum, value);
         addSymbol(symbol);
     }
 

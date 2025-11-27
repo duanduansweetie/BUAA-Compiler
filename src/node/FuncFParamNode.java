@@ -47,5 +47,8 @@ public class FuncFParamNode extends Node{
         }
         Parser.parseWriter.write(name+"\n");
 }
+    public boolean isArray() {
+        return isArray;
+    }
 
 }

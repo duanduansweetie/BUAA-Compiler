@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lexer.LexerType;
 import lexer.Token;
+import llvmir.value.structure.Function;
 import node.*;
 import symbol.*;
 
@@ -20,10 +21,12 @@ public class Parser {
     private Error error;
     private final ScopeStack scopeStack;
     private final SymbolBuilder symbolBuilder;
-    public Parser(ErrorManager errorManager,ScopeStack scopeStack,SymbolBuilder symbolBuilder) {
+    private final IrBuilder irBuilder;
+    public Parser(ErrorManager errorManager,ScopeStack scopeStack,SymbolBuilder symbolBuilder,IrBuilder irBuilder) {
         this.errorManager = errorManager;
         this.scopeStack=scopeStack;
         this.symbolBuilder=symbolBuilder;
+        this.irBuilder=irBuilder;
     }
     public List<Token> getTokenList() {
         return tokenList;
@@ -89,7 +92,7 @@ public class Parser {
                 declNodes.add(declNode);
             }
         }
-
+        irBuilder.inGlobal=false;
         while ((nowToken.getType() == LexerType.INTTK && nextToken.getType() != LexerType.MAINTK)
                 || nowToken.getType() == LexerType.VOIDTK) {
             FuncDefNode funcDefNode = parseFuncDef();
@@ -155,7 +158,10 @@ public class Parser {
             errorManager.addError(tokenList.get(index-2).getLinenum(), ErrorType.I);
         }
         System.out.println("[DEBUG] Exiting parseConstDecl");
-        return new ConstDeclNode(bTypeNode, constDefNodeList);
+        ConstDeclNode constDeclNode=new ConstDeclNode(bTypeNode, constDefNodeList);
+        if (irBuilder.inGlobal && !errorManager.hasError)
+            irBuilder.buildGlobalVariable(constDeclNode);
+        return constDeclNode;
     }
     public ConstDefNode parseConstDef(){
         // ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal
@@ -299,8 +305,10 @@ public class Parser {
             //错误处理
             errorManager.addError(tokenList.get(index-2).getLinenum(), ErrorType.I);
         }
-
-        return new VarDeclNode(isStatic,bTypeNode, varDefNodeList);
+        VarDeclNode varDeclNode=new VarDeclNode(isStatic,bTypeNode, varDefNodeList);
+        if (irBuilder.inGlobal && !errorManager.hasError)
+            irBuilder.buildGlobalVariable(varDeclNode);
+        return varDeclNode;
     }
     public VarDefNode parseVarDef(){
         //VarDef → Ident [ '[' ConstExp ']' ] | Ident [ '[' ConstExp ']' ] '=' InitVal // k
@@ -430,6 +438,7 @@ public class Parser {
             errorManager.addError(tokenList.get(index-2).getLinenum(), ErrorType.J);
         }
         FuncDefNode funcDefNode = new FuncDefNode(funcTypeNode, identNode, funcFParamsNode);
+        irBuilder.voidFuncHasReturn = true;
         symbolBuilder.buildFunc(funcTypeNode,identNode,funcFParamsNode,lineno);
         scopeStack.enterScope();
         if(funcFParamsNode!=null){
@@ -451,11 +460,18 @@ public class Parser {
             if(errorManager.inIntFunc){
                 errorManager.addError(tokenList.get(index-2).getLinenum(), ErrorType.G);
             }
+            else if (errorManager.inVoidFunc)
+                irBuilder.voidFuncHasReturn = false;
         }
         errorManager.inIntFunc = false;
         errorManager.inVoidFunc = false;
         funcDefNode=new FuncDefNode(funcTypeNode,identNode,funcFParamsNode,blockNode);
+        Function function = null;
+        if (!errorManager.hasError)
+            function = irBuilder.buildFunction(funcDefNode);
         scopeStack.exitScope();
+        if (!errorManager.hasError)
+            irBuilder.buildFunctionBody(blockNode, function);
         return funcDefNode;
     }
     public MainFuncDefNode parseMainFuncDef(){
@@ -487,6 +503,7 @@ public class Parser {
             getToken();
         }
         errorManager.inIntFunc=true;
+        irBuilder.voidFuncHasReturn = true;
         scopeStack.enterScope();
         blockNode = parseBlockForFunc();
         boolean isReturn = false;
@@ -505,7 +522,12 @@ public class Parser {
             errorManager.addError(tokenList.get(index - 1).getLinenum(), ErrorType.G);
         }
         errorManager.inIntFunc=false;
+        Function function = null;
+        if (!errorManager.hasError)
+            function = irBuilder.buildMainFunction();
         scopeStack.exitScope();
+        if (!errorManager.hasError)
+            irBuilder.buildFunctionBody(blockNode, function);
         MainFuncDefNode mainFuncDefNode=new MainFuncDefNode(blockNode);
         return mainFuncDefNode;
     }

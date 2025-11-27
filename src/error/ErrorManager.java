@@ -10,6 +10,7 @@ import node.FuncRParamsNode;
 import symbol.*;
 public class ErrorManager {
     private final List<Error> errorList = new ArrayList<>();
+    public boolean hasError = false; // 是否有错误
     public int inFor=0;
     public boolean inVoidFunc = false;
     public boolean inIntFunc = false;
@@ -27,6 +28,7 @@ public class ErrorManager {
                 return; // Error already exists, do not add again
             }
         }
+        hasError = true;
         errorList.add(new Error(lineNumber, errorType));
     }
     public void showErrors() {

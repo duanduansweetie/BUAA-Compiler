@@ -11,7 +11,6 @@ public class ForStmtNode extends Node {
     // ForStmt → LVal '=' Exp { ',' LVal '=' Exp }
     private final List<LValNode> lValNodes; // 支持多个 LVal
     private final List<ExpNode> expNodes;   // 支持多个 Exp
-
     // 新的构造方法，接收多个 LVal 和 Exp
     public ForStmtNode(List<LValNode> lValNodes, List<ExpNode> expNodes) {
         if (lValNodes.size() != expNodes.size()) {
@@ -20,7 +19,13 @@ public class ForStmtNode extends Node {
         this.lValNodes = lValNodes;
         this.expNodes = expNodes;
     }
+    public List<ExpNode> getExpNode() {
+        return expNodes;
+    }
 
+    public List<LValNode> getlValNode() {
+        return lValNodes;
+    }
     // Getter 方法
     public List<LValNode> getLValNodes() {
         return lValNodes;

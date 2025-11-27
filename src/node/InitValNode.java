@@ -49,4 +49,19 @@ public class InitValNode extends Node{
         }
         Parser.parseWriter.write(name+"\n");
     }
+    public List<Integer> calculateArray() {
+        List<Integer> res = new ArrayList<>();
+        for (ExpNode expNode : expNodeList) {
+            res.add(expNode.calculate());
+        }
+        return res;
+    }
+
+    public int calculate() {
+        if (expNode != null) {
+            return expNode.calculate();
+        } else {
+            return expNodeList.size();
+        }
+    }
 }

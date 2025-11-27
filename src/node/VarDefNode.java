@@ -73,4 +73,22 @@ public class VarDefNode extends Node{
     }
     Parser.parseWriter.write(name + "\n");
     }
+   public List<Integer> calculateArray(){
+        if(initValNode!=null){
+            return initValNode.calculateArray();
+        }
+        else {
+            return null;
+        }
+   }
+    public int calculate() {
+        if (initValNode != null) {
+            return initValNode.calculate();
+        } else {
+            return 0;
+        }
+    }
+
+
+
 }

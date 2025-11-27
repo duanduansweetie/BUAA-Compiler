@@ -1,79 +1,231 @@
-const int a = 2, b[3 = {1, 2, 3};//k
-int arr1[3] = {1};
-int c = b[a];
+int i;
+int ii = 0;
 
-int getNumber({//j
-    static int x = 0;
-    x = x + 1   //i
-    if( x==1 | x==2 || x==3 || x==4){ //a
-        printf("bingo\n");
+int global_var = 0;
+int func() {
+    static int x = 1;
+    static int x1 = 1, x2 = 2;
+    int i,j,k;
+    for(i=0, j=0, k=0; ; i=i+1, j=j+2, k=k+3){
+
     }
-    return getint();
-}
-void test(){
-    return 1;
-}
-int min(int a, int b, int flag[){
-    if(flag && a > b){
-        return b;
-    }else if(a > b){
-        return 0;
-    }else return a;
-
-    return 0;
-}
-int max(int a, int b, int flag{
-    if(flag && a < b){
-        return b;
-    }else if(a < b){
-        return 0;
-    }else return b;
-    return 0;
+	global_var = global_var + 1;
+	return 1;
 }
 
-int fib(int x){
-    if(x==1 || x==0){
-        return 1;
-    }
-    //return fib(x-1) + fib(x-2);
+void func1()
+{
+	printf("crsb\n");
+	return;
 }
 
-int func0(){
-    c = c + 1;
-    return 1;
+int func2(int a)
+{
+	printf("%d crsb\n", a);
+	return a;
 }
-int main(){
-    printf("hello bingo test\n");
-    int p1 = getNumber();
-    int p1;
-    p_no_define = 2;
-    a = 3;
-    static int p2 = b[c-1];
-    arr1[1] = p2 * 2 + 3 - a*b[a] + c/3*3;
-    ;
-    222;
-    static int p3 = 1;
-    p3 = min(p1, 2, arr1);
-    p3 = max(min(p1, 2, arr1), max(1, 2, 0));
-    printf("p3 is %d\n", p3);
-    int fib_test = fib(4) + min(fib(2), p1, 1);
-    printf("fib_test is %d\n", fib_test);
 
-    if(0 && func0() == 1){
-        printf("no here\n", c);
-    }
-    if(c==3 || func0()){
-        printf("right here\n");
-        printf("c should be 3, and your answer is %d\n", c);
-    }
-    for(c = 2; c == 2 && func0() == 1 || func0() > 1; c = c + 1){
-        printf("only for once and c should be print as 3, your c is %d\n", c);
-    }
-    if(c==4 || func0() == 1){
-        printf("here c should be 6, and your c is %d\n", c);
-        break;
-        continue;
-    }
+void func3(int a[])
+{
+	printf("%d crsb\n", a[0]);
+	return;
+}
 
-    return 0;
+int func4(int a, int b)
+{
+	printf("%d %d crsb\n", a, b);
+	return b;
+}
+
+void func5(int a[], int b)
+{
+	printf("%d %d crsb\n", a[0], b);
+	return;
+}
+int main()
+{
+	printf("22373340\n");
+	if (0 && func()){
+		;
+	}
+	printf("%d",global_var); // 输出 0
+	if (1 || func()) {
+		;
+	}
+	printf("%d",global_var); // 输出 0
+
+	i = 1;
+	if (i == 1)
+	{
+		printf("if 1 condition\n");
+	}
+	if (i >= 1)
+	{
+		printf("if 1 condition\n");
+	}
+	else
+	{
+		printf("if 1 else\n");
+	}
+	if (i <= 1)
+	{
+		printf("if 1 condition\n");
+	}
+	else
+	{
+		printf("if 1 else\n");
+	}
+	if (i != 1)
+	{
+		printf("if 1 condition\n");
+	}
+	else
+	{
+		printf("if 1 else\n");
+	}
+	if (i < 1)
+	{
+		printf("if 1 condition\n");
+	}
+	else
+	{
+		printf("if 1 else\n");
+	}
+	if (i > 1)
+	{
+		printf("if 1 condition\n");
+	}
+	else
+	{
+		printf("if 1 else\n");
+	}
+
+	if(i != !i){
+		printf("You should see this\n");
+	}
+
+	for (i = 0; i < 10; i = i + 1)
+	{
+		if (i == 0)
+		{
+			printf("continue test\n");
+			continue;
+		}
+		printf("The %d time run for\n", i);
+		if (i == 9)
+		{
+			printf("break test\n");
+			break;
+		}
+	}
+
+	const int i1 = 1;
+	const int c1 = 114;
+	const int ii1 = 1, ii2 = 2;
+	const int cc1 = 114, cc2 = 514;
+	const int ia1[5] = {1, 2, 3, 4, 5};
+	const int ca1[5] = {6, 7, 8, 9};
+	const int hello[6] = {10, 11, 12};
+
+	printf("test fot const array:%d %d %d\n", ia1[0], ca1[2], hello[1]);
+	int i2;
+	int c2;
+	int ii3, ii4;
+	int cc3, cc4;
+	int ia2[5] = {1, 2, 3, 4, 5};
+	int ia3[5];
+	int ca2[5] = {1, 2, 3, 4};
+	int hello2[6] = {5, 6, 7, 8, 9};
+
+	i2 = +1;
+	i2 = -1;
+	i2 = 1 + 1;
+	i2 = 1 * 1;
+	i2 = 1 / 1;
+	i2 = 1 - 1;
+	i2 = 1 % 2;
+	i2 = (1 + 1) * i2;
+	i2 = (114 + 3) / (1 + 1);
+	i2 = i2 * 2;
+	i2 = i2 + 2;
+	i2 = i2 / 1;
+	i2 = i2 % 2;
+	i2 = i2 - 2;
+
+	func1();
+	func2(i1);
+	func3(ia2);
+	func4(i1, c1);
+	func5(ca2, i1);
+
+	if (i1 == 1 || c1 == 2)
+	{
+		printf("Should be seen in ||\n");
+	}
+	else
+	{
+		;
+	}
+
+	if (i1 == 1 && c1 == 2)
+	{
+		printf("Shouldn't be seen in &&\n");
+	}
+
+	for (i = 0; i <= 10; i = i + 1)
+	{
+		if (i == 1 || i1 == 1 && c1 == 2)
+		{
+			printf("Should in continue step(%d) with complex condition\n", i);
+			continue;
+		}
+		if (i != -2)
+		{
+			printf("%d Shouldn't be seen\n", i);
+			continue;
+		}
+		break;
+	}
+
+	for (; i1 == 1; i2 = 0)
+	{
+		break;
+	}
+	for (i = 0;; i = i + 1)
+	{
+		break;
+	}
+	for (i = 0; i < 10;)
+	{
+		break;
+	}
+
+	for (i = 0;;)
+	{
+		break;
+	}
+	for (; i1 == 1;)
+	{
+		break;
+	}
+	for (;; i2 = 0)
+	{
+		break;
+	}
+
+	for (;;)
+	{
+		break;
+	}
+	{
+	}
+
+	i2 = getint();
+	printf("%d\n", i2);
+	c2 = getint();
+	printf("%d", c2);
+	c2 = getint();
+	printf("%d\n", c2);
+
+	return 0;
 }

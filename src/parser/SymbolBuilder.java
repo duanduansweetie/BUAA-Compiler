@@ -7,9 +7,11 @@ import java.util.List;
 public class SymbolBuilder {
     private final ScopeStack scopeStack;
     private final ErrorManager errorManager;
-    public SymbolBuilder(ScopeStack scopeStack, ErrorManager errorManager){
+    private final IrBuilder irBuilder;
+    public SymbolBuilder(ScopeStack scopeStack, ErrorManager errorManager,IrBuilder irBuilder){
         this.scopeStack=scopeStack;
         this.errorManager=errorManager;
+        this.irBuilder=irBuilder;
     }
     public void buildConst(BTypeNode bTypeNode,ConstDefNode constDefNode){
         if(constDefNode.getConstExpNode() ==null){
@@ -44,7 +46,13 @@ public class SymbolBuilder {
                 errorManager.addError(varDefNode.getLineno(), ErrorType.B);
             }
             else{
-                scopeStack.addSymbol(varName,symbolType,SymbolKind.VARIABLE);
+                if (irBuilder.inGlobal == true && varDefNode.getInitValNode() != null) {
+                    scopeStack.addSymbol(varName, symbolType, SymbolKind.VARIABLE,
+                            varDefNode.getInitValNode().calculate());
+                } else if (irBuilder.inGlobal == true) {
+                    scopeStack.addSymbol(varName, symbolType, SymbolKind.VARIABLE, 0);
+                }
+                else{scopeStack.addSymbol(varName,symbolType,SymbolKind.VARIABLE);}
             }
         }
         else{
@@ -55,7 +63,14 @@ public class SymbolBuilder {
                 errorManager.addError(varDefNode.getLineno(), ErrorType.B);
             }
            else{
-               scopeStack.addSymbol(varName,symbolType,SymbolKind.VARIABLE,constExpNode.calculate(), null);
+                if (irBuilder.inGlobal == true && varDefNode.getInitValNode() != null) {
+                    scopeStack.addSymbol(varName, symbolType, SymbolKind.VARIABLE, constExpNode.calculate(),
+                            varDefNode.getInitValNode().calculateArray());
+                } else if (irBuilder.inGlobal == true) {
+                    // List<Integer> valueList 初始化为全0
+                    scopeStack.addSymbol(varName, symbolType, SymbolKind.VARIABLE, constExpNode.calculate(), null);
+                } else
+                    scopeStack.addSymbol(varName,symbolType,SymbolKind.VARIABLE,constExpNode.calculate(), null);
             }
         }
     }
@@ -129,11 +144,29 @@ public class SymbolBuilder {
             return;
         }
         if(!varDefNode.isArray()){
-            scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,0);
+            if(irBuilder.inGlobal==true&&varDefNode.getInitValNode()!=null){
+                scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,varDefNode.getInitValNode().calculate());
+
+            }
+            else if(irBuilder.inGlobal==true){
+                scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,0);
+
+            }
+            else{scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,0);}
+
         }
         else{
-            int length=varDefNode.getConstExpNode().calculate();
-            scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,length, new ArrayList<>());
+            if(irBuilder.inGlobal==true&&varDefNode.getInitValNode()!=null){
+                scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,varDefNode.getConstExpNode().calculate(),varDefNode.getInitValNode().calculateArray());
+
+            }
+            else if(irBuilder.inGlobal==true){
+                scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,varDefNode.getConstExpNode().calculate(),null);
+
+            }
+            else{ int length=varDefNode.getConstExpNode().calculate();
+                scopeStack.addSymbol(ident,symbolType,SymbolKind.STATIC,length, new ArrayList<>());}
+
         }
     }
 
