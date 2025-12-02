@@ -17,4 +17,13 @@ public class ConstantInt extends Constant{
     public String toString(){
         return " " + value;
     }
+    @Override
+    public String toMips() {
+        return ".word " + Integer.toString(value);
+    }
+
+    @Override
+    public String getName() {
+        return Integer.toString(value);
+    }
 }

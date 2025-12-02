@@ -7,6 +7,8 @@ import parser.SymbolBuilder;
 import symbol.ScopeStack;
 import llvmir.value.structure.Module;
 import llvmir.Printer;
+import mips.MipsBuilder;
+import mips.structure.MipsModule;
 public class Compiler{
     public static void main(String[] args) throws IOException{
         ErrorManager errorManager = new ErrorManager();
@@ -18,6 +20,8 @@ public class Compiler{
         Parser parser = new Parser(errorManager,scopeStack,symbolBuilder,irBuilder);
          errorManager.setScopeStack(scopeStack);
          Printer printer=new Printer(module);
+         MipsModule mipsModule=new MipsModule();
+         MipsBuilder mipsBuilder=new MipsBuilder(mipsModule,module);
         //词法分析
         try {
             lexer.init("testfile.txt", "lexer.txt");
@@ -53,7 +57,13 @@ public class Compiler{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        try {
+            mipsBuilder.initBuffer("mips.txt");
+            mipsBuilder.showMips();
+            mipsBuilder.closeBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

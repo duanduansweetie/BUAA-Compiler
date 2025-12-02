@@ -3,20 +3,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
-
-import symbol.ScopeStack;
-import node.*;
 import llvmir.type.*;
+import llvmir.value.*;
+import llvmir.value.constants.*;
 import llvmir.value.instructions.*;
 import llvmir.value.structure.BasicBlock;
 import llvmir.value.structure.Function;
 import llvmir.value.structure.GlobalVariable;
+import llvmir.value.structure.GlobalVariable.VType;
 import llvmir.value.structure.Instruction;
 import llvmir.value.structure.Module;
 import llvmir.value.structure.Param;
-import llvmir.value.structure.GlobalVariable.VType;
-import llvmir.value.*;
-import llvmir.value.constants.*;
+import node.*;
+import symbol.ScopeStack;
 public class IrBuilder {
     private Module module;
     private ScopeStack scopeStack;
@@ -306,7 +305,7 @@ public void buildLValAndExp(LValNode lValNode, ExpNode expNode){
         Trunc trunc = new Trunc(expValue, currentBlock);
         currentBlock.addInstruction(trunc);
         expValue = trunc;
-    }else if(((PointType)value.getType()).getPoint() instanceof Integer32Type && expValue.getType() instanceof Integer8Type){
+    }else if(((PointType)value.getType()).getPoint() instanceof Integer32Type && (expValue.getType() instanceof Integer8Type || expValue.getType() instanceof Integer1Type)){
         Zext zext = new Zext(expValue, currentBlock);
         currentBlock.addInstruction(zext);
         expValue = zext;
@@ -521,7 +520,7 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
                 value = trunc;
             }
         } else if (currentFunction.getType() instanceof Integer32Type) {
-            if (value.getType() instanceof Integer8Type) {
+            if (value.getType() instanceof Integer8Type || value.getType() instanceof Integer1Type) {
                 Zext zext = new Zext(value, currentBlock);
                 currentBlock.addInstruction(zext);
                 value = zext;
@@ -714,7 +713,7 @@ public void buildLAndExp(LAndExpNode lAndExpNode, BasicBlock trueBlock, BasicBlo
                         value = trunc;
                     }
                 } else if (irType instanceof Integer32Type) {
-                    if (value.getType() instanceof Integer8Type) {
+                    if (value.getType() instanceof Integer8Type || value.getType() instanceof Integer1Type) {
                         Zext zext = new Zext(value, currentBlock);
                         currentBlock.addInstruction(zext);
                         value = zext;

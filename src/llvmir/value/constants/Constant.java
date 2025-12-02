@@ -6,4 +6,7 @@ public class Constant extends Value{
     public Constant(String name,Type type) {
         super( name,type);
     }
+    public String toMips() {
+        return "constant toMips";
+    }
 }

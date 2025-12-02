@@ -43,4 +43,26 @@ public class ConstantArray extends Constant{
         sb.append("]");
         return sb.toString();
     }
+
+    @Override
+    public String toMips() {
+        if (values == null || values.size() == 0) {
+            return ".word 0:" + length;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(".word ");
+        for (int i = 0; i < values.size(); i++) {
+            sb.append(values.get(i).getValue());
+            if (i != values.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        // 补零
+        for (int i = values.size(); i < length; i++) {
+            sb.append(", 0");
+        }
+        return sb.toString();
+    }
+
+
 }
