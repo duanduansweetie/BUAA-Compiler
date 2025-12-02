@@ -1,10 +1,12 @@
 package llvmir.value.structure;
-import llvmir.value.Value;
 import java.util.ArrayList;
 import java.util.List;
+import llvmir.value.Value;
 public class BasicBlock extends Value{
     private List<Instruction> instructions;
     private Function parent;
+    private List<BasicBlock> predecessors = new ArrayList<>();
+    private List<BasicBlock> successors = new ArrayList<>();
     public BasicBlock(Function parent){
         super(null,null);
         this.parent=parent;
@@ -38,6 +40,13 @@ public class BasicBlock extends Value{
                 for (int i = 0; i < inst.getOperands().size(); i++)
                     if (inst.getOperands().get(i) == oldInst)
                         inst.getOperands().set(i, newInsts);
+    }
+    public List<BasicBlock> getPredecessors() {
+        return predecessors;
+    }
+
+    public List<BasicBlock> getSuccessors() {
+        return successors;
     }
     @Override
     public String toString(){

@@ -67,6 +67,10 @@ public class Value {
         }
     }
 
+    public void addUser(User user) {
+        users.add(user);
+    }
+
     public String getPrintName() {
         if (name == null) {
             return "null";

@@ -2,6 +2,7 @@ package mips.structure;
 import java.util.ArrayList;
 import java.util.List;
 import mips.value.PhyReg;
+import mips.value.RegManager;
 
 public class MipsFunc {
     private int stackSize = 0; // 栈大小
@@ -45,6 +46,17 @@ public class MipsFunc {
         // 栈大小
         sb.append("addi $sp, $sp, -").append(stackSize).append("\n");
         sb.append("sw $ra, ").append(stackSize - 4).append("($sp)\n");
+        
+        // Save Callee-Saved Registers
+        for (PhyReg reg : usedRegisters) {
+            if (reg.isCalleeSaved()) {
+                if (RegManager.TEMP_REG_OFFSET.containsKey(reg)) {
+                    sb.append("sw ").append(reg).append(", ")
+                      .append(stackSize + RegManager.TEMP_REG_OFFSET.get(reg)).append("($sp)\n");
+                }
+            }
+        }
+        
         for (MipsBlock block : blocks) {
             sb.append(block);
         }

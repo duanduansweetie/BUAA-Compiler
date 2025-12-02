@@ -8,7 +8,6 @@ import mips.instructions.*;
 import mips.value.MipsImm;
 import mips.value.MipsOperand;
 import mips.value.PhyReg;
-import mips.value.RegManager;
 import mips.value.StackSlot;
 
 public class InstructionTranslator {
@@ -56,7 +55,7 @@ public class InstructionTranslator {
     private void translateBinaryOp(BinaryOp binaryOp) {
         MipsOperand lhs = allocator.getOperand(binaryOp.getOperands().get(0));
         MipsOperand rhs = allocator.getOperand(binaryOp.getOperands().get(1));
-        PhyReg target = allocator.allocateReg(binaryOp);
+        MipsOperand target = allocator.allocateReg(binaryOp);
         context.getCurrBlock().addInstruction(new MipsALU(target, lhs, rhs, binaryOp.getOp()));
     }
 
@@ -109,80 +108,92 @@ public class InstructionTranslator {
     }
 
     private void translateGetElementPtr(GetElementPtr gep) {
-        PhyReg target = allocator.allocateReg(gep);
+        MipsOperand target = allocator.allocateReg(gep);
         MipsOperand base = allocator.getOperand(gep.getOperands().get(0));
         MipsOperand index = allocator.getOperand(gep.getOperands().get(1));
 
-        context.getCurrBlock().addInstruction(new MipsMem(target, base, MipsMem.MemOp.LA));
-
         MipsOperand offsetVal = index;
         if (index instanceof PhyReg) {
-            PhyReg temp = RegManager.getTempRegister(context.getCurrFunc());
+            // Use T8 as temp register for shift calculation
+            PhyReg temp = PhyReg.T8;
+            context.getCurrFunc().addRegister(temp);
             context.getCurrBlock().addInstruction(new MipsALU(temp, index, new MipsImm(2), "<<"));
             offsetVal = temp;
         } else if (index instanceof MipsImm) {
             offsetVal = new MipsImm(((MipsImm) index).getValue() * 4);
         }
 
+        context.getCurrBlock().addInstruction(new MipsMem(target, base, MipsMem.MemOp.LA));
+
         if (!((offsetVal instanceof MipsImm) && ((MipsImm) offsetVal).getValue() == 0)) {
             context.getCurrBlock().addInstruction(new MipsALU(target, target, offsetVal, "+"));
         }
-
-        if (offsetVal instanceof PhyReg && offsetVal != index) {
-            RegManager.releaseTempRegister((PhyReg) offsetVal, context.getCurrFunc());
-        }
+        
+        // No need to release T8 as it is reserved for translator
     }
 
     private void translateIcmp(Icmp icmp) {
         String op = icmp.getOp();
         MipsOperand lhs = allocator.getOperand(icmp.getOperands().get(0));
         MipsOperand rhs = allocator.getOperand(icmp.getOperands().get(1));
-        PhyReg target = allocator.allocateReg(icmp);
+        MipsOperand target = allocator.allocateReg(icmp);
         context.getCurrBlock().addInstruction(new MipsALU(target, lhs, rhs, op));
     }
 
     private void translateLoad(Load load) {
-        MipsOperand addr = allocator.getOperand(load.getOperands().get(0));
-        PhyReg target = allocator.allocateReg(load);
-        context.getCurrBlock().addInstruction(new MipsMem(target, addr, MipsMem.MemOp.LW));
+        Value ptr = load.getOperands().get(0);
+        MipsOperand addr = allocator.getOperand(ptr);
+        MipsOperand target = allocator.allocateReg(load);
+        
+        if (ptr instanceof Alloca && addr instanceof PhyReg) {
+            context.getCurrBlock().addInstruction(new MipsMove(target, addr));
+        } else {
+            context.getCurrBlock().addInstruction(new MipsMem(target, addr, MipsMem.MemOp.LW));
+        }
     }
 
     private void translateRet(Ret ret) {
         if (ret.getOperands().size() == 0 || ret.getOperands().get(0) == null) {
-            context.getCurrBlock().addInstruction(new MipsReturn(context.getCurrFunc().getStackSize()));
+            context.getCurrBlock().addInstruction(new MipsReturn(context.getCurrFunc().getStackSize(), context.getCurrFunc()));
         } else {
             MipsOperand val = allocator.getOperand(ret.getOperands().get(0));
-            context.getCurrBlock().addInstruction(new MipsReturn(val, context.isMain(), context.getCurrFunc().getStackSize()));
+            context.getCurrBlock().addInstruction(new MipsReturn(val, context.isMain(), context.getCurrFunc().getStackSize(), context.getCurrFunc()));
         }
     }
 
     private void translateStore(Store store) {
+        Value ptr = store.getOperands().get(1);
         MipsOperand data = allocator.getOperand(store.getOperands().get(0));
-        MipsOperand addr = allocator.getOperand(store.getOperands().get(1));
+        MipsOperand addr = allocator.getOperand(ptr);
 
         MipsOperand finalData = data;
         if (data instanceof MipsImm) {
-            PhyReg li = RegManager.getTempRegister(context.getCurrFunc());
+            // Use T8 as temp register for loading immediate
+            PhyReg li = PhyReg.T8;
+            context.getCurrFunc().addRegister(li);
             context.getCurrBlock().addInstruction(new MipsMem(li, data, MipsMem.MemOp.LI));
             finalData = li;
         }
 
-        context.getCurrBlock().addInstruction(new MipsMem(finalData, addr, MipsMem.MemOp.SW));
-
-        if (finalData != data && finalData instanceof PhyReg) {
-            RegManager.releaseTempRegister((PhyReg) finalData, context.getCurrFunc());
+        if (ptr instanceof Alloca && addr instanceof PhyReg) {
+            context.getCurrBlock().addInstruction(new MipsMove(addr, finalData));
+        } else {
+            context.getCurrBlock().addInstruction(new MipsMem(finalData, addr, MipsMem.MemOp.SW));
         }
+        
+        // No need to release T8
     }
 
     private void translateZext(Zext zext) {
         MipsOperand src = allocator.getOperand(zext.getFirstOperand());
-        PhyReg target = allocator.allocateReg(zext);
+        MipsOperand target = allocator.allocateReg(zext);
 
         if (src instanceof MipsImm) {
-            PhyReg li = RegManager.getTempRegister(context.getCurrFunc());
+            // Use T8 as temp register
+            PhyReg li = PhyReg.T8;
+            context.getCurrFunc().addRegister(li);
             context.getCurrBlock().addInstruction(new MipsMem(li, src, MipsMem.MemOp.LI));
             context.getCurrBlock().addInstruction(new MipsMove(target, li));
-            RegManager.releaseTempRegister(li, context.getCurrFunc());
         } else {
             context.getCurrBlock().addInstruction(new MipsMove(target, src));
         }
@@ -195,7 +206,7 @@ public class InstructionTranslator {
             int value = ((MipsImm) src).getValue();
             trunc.setRegister(new MipsImm(value & 0x7F));
         } else {
-            PhyReg target = allocator.allocateReg(trunc);
+            MipsOperand target = allocator.allocateReg(trunc);
             context.getCurrBlock().addInstruction(new MipsALU(target, src, new MipsImm(0x7F), "&"));
         }
     }

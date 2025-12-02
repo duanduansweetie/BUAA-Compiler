@@ -19,6 +19,10 @@ public class PhyReg implements MipsOperand {
         return name;
     }
 
+    public boolean isCalleeSaved() {
+        return type == RegType.SAVED;
+    }
+
     public int getIndex() {
         return index;
     }

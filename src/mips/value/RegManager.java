@@ -13,16 +13,42 @@ public class RegManager {
     private static final List<PhyReg> SAVED_REGS = new ArrayList<>();
     public static final Map<PhyReg, Integer> TEMP_REG_OFFSET = new HashMap<>();
 
+    public static final List<PhyReg> ALLOCATABLE_REGS = new ArrayList<>();
+    public static final List<PhyReg> CALLER_SAVED_REGS = new ArrayList<>();
+    public static final List<PhyReg> CALLEE_SAVED_REGS = new ArrayList<>();
+
     static {
         register(PhyReg.ZERO); register(PhyReg.AT); register(PhyReg.V0); register(PhyReg.V1);
         register(PhyReg.A0); register(PhyReg.A1); register(PhyReg.A2); register(PhyReg.A3);
+        // T8, T9 reserved for InstructionTranslator
+        register(PhyReg.T8); register(PhyReg.T9);
         register(PhyReg.T0); register(PhyReg.T1); register(PhyReg.T2); register(PhyReg.T3);
         register(PhyReg.T4); register(PhyReg.T5); register(PhyReg.T6); register(PhyReg.T7);
         register(PhyReg.S0); register(PhyReg.S1); register(PhyReg.S2); register(PhyReg.S3);
         register(PhyReg.S4); register(PhyReg.S5); register(PhyReg.S6); register(PhyReg.S7);
-        register(PhyReg.T8); register(PhyReg.T9);
         register(PhyReg.K0); register(PhyReg.K1); register(PhyReg.GP); register(PhyReg.SP);
         register(PhyReg.FP); register(PhyReg.RA);
+
+        // Initialize Allocatable Registers (T0-T7, S0-S7)
+        ALLOCATABLE_REGS.add(PhyReg.T0); ALLOCATABLE_REGS.add(PhyReg.T1);
+        ALLOCATABLE_REGS.add(PhyReg.T2); ALLOCATABLE_REGS.add(PhyReg.T3);
+        ALLOCATABLE_REGS.add(PhyReg.T4); ALLOCATABLE_REGS.add(PhyReg.T5);
+        ALLOCATABLE_REGS.add(PhyReg.T6); ALLOCATABLE_REGS.add(PhyReg.T7);
+        ALLOCATABLE_REGS.add(PhyReg.S0); ALLOCATABLE_REGS.add(PhyReg.S1);
+        ALLOCATABLE_REGS.add(PhyReg.S2); ALLOCATABLE_REGS.add(PhyReg.S3);
+        ALLOCATABLE_REGS.add(PhyReg.S4); ALLOCATABLE_REGS.add(PhyReg.S5);
+        ALLOCATABLE_REGS.add(PhyReg.S6); ALLOCATABLE_REGS.add(PhyReg.S7);
+
+        // Initialize Caller Saved Registers (T0-T9, A0-A3, V0-V1, RA)
+        CALLER_SAVED_REGS.add(PhyReg.T0); CALLER_SAVED_REGS.add(PhyReg.T1);
+        CALLER_SAVED_REGS.add(PhyReg.T2); CALLER_SAVED_REGS.add(PhyReg.T3);
+        CALLER_SAVED_REGS.add(PhyReg.T4); CALLER_SAVED_REGS.add(PhyReg.T5);
+        CALLER_SAVED_REGS.add(PhyReg.T6); CALLER_SAVED_REGS.add(PhyReg.T7);
+        CALLER_SAVED_REGS.add(PhyReg.T8); CALLER_SAVED_REGS.add(PhyReg.T9);
+        CALLER_SAVED_REGS.add(PhyReg.A0); CALLER_SAVED_REGS.add(PhyReg.A1);
+        CALLER_SAVED_REGS.add(PhyReg.A2); CALLER_SAVED_REGS.add(PhyReg.A3);
+        CALLER_SAVED_REGS.add(PhyReg.V0); CALLER_SAVED_REGS.add(PhyReg.V1);
+        CALLER_SAVED_REGS.add(PhyReg.RA);
 
         TEMP_REG_OFFSET.put(PhyReg.T0, -8);
         TEMP_REG_OFFSET.put(PhyReg.T1, -12);
@@ -60,7 +86,6 @@ public class RegManager {
 
     public static void releaseTempRegisters(MipsFunc func) {
         TEMP_REGS.clear();
-        func.getUsedRegisters().clear();
         for (PhyReg reg : REG_MAP.values()) {
             if (reg.getType() == PhyReg.RegType.TEMP) TEMP_REGS.add(reg);
         }

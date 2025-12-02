@@ -22,7 +22,12 @@ public class MipsCall extends MipsInstr {
         this.name = name;
         this.offset = -offset + 16;
         this.stackOffset = func.getStackSize();
-        this.savedRegisters = new ArrayList<>(func.getUsedRegisters());
+        this.savedRegisters = new ArrayList<>();
+        for (PhyReg reg : func.getUsedRegisters()) {
+            if (!reg.isCalleeSaved()) {
+                this.savedRegisters.add(reg);
+            }
+        }
     }
 
     public MipsCall(String name, List<MipsOperand> args, int offset, MipsFunc func) {

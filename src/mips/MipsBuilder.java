@@ -1,6 +1,10 @@
 package mips;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import llvmir.value.Value;
+import llvmir.value.instructions.Alloca;
 import llvmir.value.structure.BasicBlock;
 import llvmir.value.structure.Function;
 import llvmir.value.structure.GlobalVariable;
@@ -12,10 +16,6 @@ import mips.value.GlobalLabel;
 import mips.value.RegManager;
 import mips.value.StackSlot;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class MipsBuilder {
     private BufferedWriter writer;
     private final MipsModule mipsModule;
@@ -24,6 +24,7 @@ public class MipsBuilder {
     private final StackAnalyzer stackAnalyzer;
     private final RegisterAllocator registerAllocator;
     private final InstructionTranslator instructionTranslator;
+    private final GraphColoringAllocator graphColoringAllocator;
 
     public MipsBuilder(MipsModule mipsModule, Module module) {
         this.mipsModule = mipsModule;
@@ -32,6 +33,7 @@ public class MipsBuilder {
         this.stackAnalyzer = new StackAnalyzer();
         this.registerAllocator = new RegisterAllocator(context);
         this.instructionTranslator = new InstructionTranslator(context, registerAllocator);
+        this.graphColoringAllocator = new GraphColoringAllocator(context);
     }
 
     public void buildMipsModule() {
@@ -42,6 +44,8 @@ public class MipsBuilder {
             gv.setRegister(new GlobalLabel(gv.getName().substring(1)));
         }
         stackAnalyzer.analyze(module, mipsModule);
+        
+        graphColoringAllocator.allocateRegisters(module);
 
         for (Value function : module.getFunctions()) {
             buildMipsFunction((Function) function);
@@ -58,9 +62,19 @@ public class MipsBuilder {
             context.setCurrFunc(mipsModule.getFunction(funcName));
         }
         allocateArguments(function);
+        
+        // Pre-process Alloca instructions to assign stack slots
+        for (BasicBlock bb : function.getBasicBlocks()) {
+            for (Value inst : bb.getInstructions()) {
+                if (inst instanceof Alloca) {
+                    instructionTranslator.translate(inst);
+                }
+            }
+        }
+
         for (BasicBlock basicBlock : function.getBasicBlocks()) {
             context.getCurrFunc().blocks.add(
-                    buildMipsBasicBlock(basicBlock, function.getBasicBlocks().indexOf(basicBlock))
+                    buildMipsBasicBlock(basicBlock)
             );
         }
 
@@ -81,7 +95,7 @@ public class MipsBuilder {
         }
     }
 
-    private MipsBlock buildMipsBasicBlock(BasicBlock bb, int index) {
+    private MipsBlock buildMipsBasicBlock(BasicBlock bb) {
         MipsBlock mipsBlock = new MipsBlock(bb.getParent().getName().substring(1) + "_" + bb.getName());
         context.setCurrBlock(mipsBlock);
 
@@ -89,7 +103,7 @@ public class MipsBuilder {
             Value instruction = bb.getInstructions().get(i);
             
             instructionTranslator.translate(instruction);
-            registerAllocator.tryToReleaseRegister(instruction, bb, i);
+            // registerAllocator.tryToReleaseRegister(instruction, bb, i);
             
             if (isJumpInstruction(instruction)) {
                 break;

@@ -16,9 +16,9 @@ public class RegisterAllocator {
         this.context = context;
     }
 
-    public PhyReg allocateReg(Value value) {
-        if (value.getRegister() != null && value.getRegister() instanceof PhyReg) {
-            return (PhyReg) value.getRegister();
+    public MipsOperand allocateReg(Value value) {
+        if (value.getRegister() != null) {
+            return value.getRegister();
         }
         PhyReg reg = RegManager.getTempRegister(context.getCurrFunc());
         value.setRegister(reg);

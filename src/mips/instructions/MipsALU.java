@@ -156,6 +156,25 @@ public class MipsALU extends MipsInstr {
     }
 
     private String toMulString(String dst, String o1, String o2, boolean op1IsImm, boolean op2IsImm) {
+        if (op1IsImm && op2IsImm) {
+            int value = ((MipsImm) op1).getValue() * ((MipsImm) op2).getValue();
+            return "li " + dst + ", " + value;
+        }
+        if (op2IsImm) {
+            int val = ((MipsImm)op2).getValue();
+            if (val > 0 && (val & (val - 1)) == 0) {
+                int shift = Integer.numberOfTrailingZeros(val);
+                return "sll " + dst + ", " + o1 + ", " + shift;
+            }
+        }
+        if (op1IsImm) {
+            int val = ((MipsImm)op1).getValue();
+            if (val > 0 && (val & (val - 1)) == 0) {
+                int shift = Integer.numberOfTrailingZeros(val);
+                return "sll " + dst + ", " + o2 + ", " + shift;
+            }
+        }
+
         StringBuilder sb = new StringBuilder();
         String finalO1 = o1;
         String finalO2 = o2;
@@ -185,6 +204,43 @@ public class MipsALU extends MipsInstr {
     }
 
     private String toDivString(String dst, String o1, String o2, boolean op1IsImm, boolean op2IsImm, boolean isDiv) {
+        if (op1IsImm && op2IsImm) {
+            int v1 = ((MipsImm) op1).getValue();
+            int v2 = ((MipsImm) op2).getValue();
+            if (v2 != 0) {
+                int value = isDiv ? (v1 / v2) : (v1 % v2);
+                return "li " + dst + ", " + value;
+            }
+        }
+        if (isDiv && op2IsImm) {
+            int val = ((MipsImm)op2).getValue();
+            if (val > 0 && (val & (val - 1)) == 0) {
+                int k = Integer.numberOfTrailingZeros(val);
+                if (k == 0) {
+                    if (op1IsImm) return "li " + dst + ", " + o1;
+                    return "move " + dst + ", " + o1;
+                }
+                
+                StringBuilder sb = new StringBuilder();
+                String temp = "$at";
+                if (o1.equals("$at")) temp = "$v1";
+                
+                if (op1IsImm) {
+                    sb.append("li ").append(temp).append(", ").append(o1).append("\n");
+                    sb.append("sra ").append(temp).append(", ").append(temp).append(", 31\n");
+                    sb.append("srl ").append(temp).append(", ").append(temp).append(", ").append(32 - k).append("\n");
+                    sb.append("li $v1, ").append(o1).append("\n");
+                    sb.append("addu ").append(temp).append(", $v1, ").append(temp).append("\n");
+                } else {
+                    sb.append("sra ").append(temp).append(", ").append(o1).append(", 31\n");
+                    sb.append("srl ").append(temp).append(", ").append(temp).append(", ").append(32 - k).append("\n");
+                    sb.append("addu ").append(temp).append(", ").append(o1).append(", ").append(temp).append("\n");
+                }
+                sb.append("sra ").append(dst).append(", ").append(temp).append(", ").append(k);
+                return sb.toString();
+            }
+        }
+
         StringBuilder sb = new StringBuilder();
         String finalO1 = o1;
         String finalO2 = o2;

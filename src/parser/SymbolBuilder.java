@@ -1,9 +1,9 @@
 package parser;
-import node.*;
 import error.*;
-import symbol.*;
 import java.util.ArrayList;
 import java.util.List;
+import node.*;
+import symbol.*;
 public class SymbolBuilder {
     private final ScopeStack scopeStack;
     private final ErrorManager errorManager;

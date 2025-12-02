@@ -1,25 +1,31 @@
 package mips.instructions;
 
+import mips.structure.MipsFunc;
 import mips.structure.MipsInstr;
 import mips.value.GlobalLabel;
 import mips.value.MipsImm;
 import mips.value.MipsOperand;
+import mips.value.PhyReg;
+import mips.value.RegManager;
 import mips.value.StackSlot;
 
 public class MipsReturn extends MipsInstr {
     private MipsOperand op;
     private boolean isMain;
     private int stackOffset;
+    private MipsFunc func;
 
-    public MipsReturn(int stackOffset) {
+    public MipsReturn(int stackOffset, MipsFunc func) {
         this.stackOffset = stackOffset;
         this.isMain = false;
+        this.func = func;
     }
 
-    public MipsReturn(MipsOperand op, boolean isMain, int stackOffset) {
+    public MipsReturn(MipsOperand op, boolean isMain, int stackOffset, MipsFunc func) {
         this.op = op;
         this.isMain = isMain;
         this.stackOffset = stackOffset;
+        this.func = func;
     }
 
     @Override
@@ -43,6 +49,22 @@ public class MipsReturn extends MipsInstr {
     }
 
     private String handleStackOffset() {
-        return "lw $ra, " + (stackOffset - 4) + "($sp)\n" + "addi $sp, $sp, " + stackOffset + "\n";
+        StringBuilder sb = new StringBuilder();
+        
+        // Restore Callee-Saved Registers
+        if (func != null) {
+            for (PhyReg reg : func.getUsedRegisters()) {
+                if (reg.isCalleeSaved()) {
+                    if (RegManager.TEMP_REG_OFFSET.containsKey(reg)) {
+                        sb.append("lw ").append(reg).append(", ")
+                          .append(func.getStackSize() + RegManager.TEMP_REG_OFFSET.get(reg)).append("($sp)\n");
+                    }
+                }
+            }
+        }
+        
+        sb.append("lw $ra, ").append(stackOffset - 4).append("($sp)\n");
+        sb.append("addi $sp, $sp, ").append(stackOffset).append("\n");
+        return sb.toString();
     }
 }

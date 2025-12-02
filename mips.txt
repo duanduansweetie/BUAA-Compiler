@@ -58,8 +58,10 @@ move $a0, $t0
 li $v0, 4
 syscall
 
-sne $t1, 0, 0
-beq $t1, $zero, main_zty6
+li $v1, 0
+li $at, 0
+sne $t0, $v1, $at
+beq $t0, $zero, main_zty6
 j main_zty10
 
 main_zty4:
@@ -71,18 +73,29 @@ move $a0, $t0
 li $v0, 1
 syscall
 
-sne $t1, 1, 0
-beq $t1, $zero, main_zty22
+li $v1, 1
+li $at, 0
+sne $t0, $v1, $at
+beq $t0, $zero, main_zty22
 j main_zty14
 
 main_zty10:
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
 sw $t0, 264($sp)
+sw $t1, 260($sp)
 jal func
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
 lw $t0, 264($sp)
+lw $t1, 260($sp)
 
 move $t0, $v0
-sne $t1, $t0, 0
-beq $t1, $zero, main_zty6
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty6
 j main_zty4
 
 main_zty14:
@@ -94,21 +107,33 @@ move $a0, $t0
 li $v0, 1
 syscall
 
-li $t1, 1
-sw $t1, i
-lw $t2, i
-seq $t3, $t2, 1
-beq $t3, $zero, main_zty29
+li $t8, 1
+sw $t8, i
+lw $t0, i
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty29
 j main_zty26
 
 main_zty22:
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
 sw $t0, 264($sp)
+sw $t1, 260($sp)
+sw $t8, 232($sp)
 jal func
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
 lw $t0, 264($sp)
+lw $t1, 260($sp)
+lw $t8, 232($sp)
 
 move $t0, $v0
-sne $t1, $t0, 0
-beq $t1, $zero, main_zty16
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty16
 j main_zty14
 
 main_zty26:
@@ -121,10 +146,12 @@ j main_zty29
 
 main_zty29:
 lw $t0, i
-sge $t1, $t0, 1
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty44
+li $v1, 1
+sge $t0, $t0, $v1
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty44
 j main_zty35
 
 main_zty35:
@@ -137,10 +164,12 @@ j main_zty38
 
 main_zty38:
 lw $t0, i
-sle $t1, $t0, 1
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty54
+li $v1, 1
+sle $t0, $t0, $v1
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty54
 j main_zty47
 
 main_zty44:
@@ -161,8 +190,9 @@ j main_zty50
 
 main_zty50:
 lw $t0, i
-sne $t1, $t0, 1
-beq $t1, $zero, main_zty66
+li $v1, 1
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty66
 j main_zty57
 
 main_zty54:
@@ -183,10 +213,11 @@ j main_zty60
 
 main_zty60:
 lw $t0, i
-slt $t1, $t0, 1
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty78
+slti $t0, $t0, 1
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty78
 j main_zty69
 
 main_zty66:
@@ -207,10 +238,12 @@ j main_zty72
 
 main_zty72:
 lw $t0, i
-sgt $t1, $t0, 1
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty91
+li $v1, 1
+sgt $t0, $t0, $v1
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty91
 j main_zty81
 
 main_zty78:
@@ -232,10 +265,11 @@ j main_zty84
 main_zty84:
 lw $t0, i
 lw $t1, i
-seq $t2, $t1, 0
-move $t3, $t2
-sne $t4, $t0, $t3
-beq $t4, $zero, main_zty97
+li $v1, 0
+seq $t1, $t1, $v1
+move $t1, $t1
+sne $t0, $t0, $t1
+beq $t0, $zero, main_zty97
 j main_zty94
 
 main_zty91:
@@ -255,82 +289,82 @@ syscall
 j main_zty97
 
 main_zty97:
-li $t0, 0
-sw $t0, i
+li $t8, 0
+sw $t8, i
 j main_zty243
 
 main_zty100:
-li $t0, 1
-sw $t0, 0($sp)
-li $t1, 114
-sw $t1, 4($sp)
-li $t2, 1
-sw $t2, 8($sp)
-li $t3, 2
-sw $t3, 12($sp)
-li $t4, 114
-sw $t4, 16($sp)
-li $t5, 514
-sw $t5, 20($sp)
-la $t6, 24($sp)
-li $t7, 1
-sw $t7, 0($t6)
-la $s0, 24($sp)
-addiu $s0, $s0, 4
-li $s1, 2
-sw $s1, 0($s0)
-la $s2, 24($sp)
-addiu $s2, $s2, 8
-li $s3, 3
-sw $s3, 0($s2)
-la $s4, 24($sp)
-addiu $s4, $s4, 12
-li $s5, 4
-sw $s5, 0($s4)
-la $s6, 24($sp)
-addiu $s6, $s6, 16
-li $s7, 5
-sw $s7, 0($s6)
-la $t8, 44($sp)
-li $t9, 6
-sw $t9, 0($t8)
+li $t8, 1
+sw $t8, 0($sp)
+li $t8, 114
+sw $t8, 4($sp)
+li $t8, 1
+sw $t8, 8($sp)
+li $t8, 2
+sw $t8, 12($sp)
+li $t8, 114
+sw $t8, 16($sp)
+li $t8, 514
+sw $t8, 20($sp)
+la $t0, 24($sp)
+li $t8, 1
+sw $t8, 0($t0)
+la $t0, 24($sp)
+addiu $t0, $t0, 4
+li $t8, 2
+sw $t8, 0($t0)
+la $t0, 24($sp)
+addiu $t0, $t0, 8
+li $t8, 3
+sw $t8, 0($t0)
+la $t0, 24($sp)
+addiu $t0, $t0, 12
+li $t8, 4
+sw $t8, 0($t0)
+la $t0, 24($sp)
+addiu $t0, $t0, 16
+li $t8, 5
+sw $t8, 0($t0)
+la $t0, 44($sp)
+li $t8, 6
+sw $t8, 0($t0)
 la $t0, 44($sp)
 addiu $t0, $t0, 4
-li $t1, 7
-sw $t1, 0($t0)
-la $t2, 44($sp)
-addiu $t2, $t2, 8
-li $t3, 8
-sw $t3, 0($t2)
-la $t4, 44($sp)
-addiu $t4, $t4, 12
-li $t5, 9
-sw $t5, 0($t4)
-la $t7, 64($sp)
-li $t6, 10
-sw $t6, 0($t7)
-la $s1, 64($sp)
-addiu $s1, $s1, 4
-li $s0, 11
-sw $s0, 0($s1)
-la $s3, 64($sp)
-addiu $s3, $s3, 8
-li $s2, 12
-sw $s2, 0($s3)
-la $s5, 24($sp)
-lw $s4, 0($s5)
-la $s7, 44($sp)
-addiu $s7, $s7, 8
-lw $s6, 0($s7)
-la $t9, 64($sp)
-addiu $t9, $t9, 4
-lw $t8, 0($t9)
-la $t1, .str.11
-move $a0, $t1
+li $t8, 7
+sw $t8, 0($t0)
+la $t0, 44($sp)
+addiu $t0, $t0, 8
+li $t8, 8
+sw $t8, 0($t0)
+la $t0, 44($sp)
+addiu $t0, $t0, 12
+li $t8, 9
+sw $t8, 0($t0)
+la $t0, 64($sp)
+li $t8, 10
+sw $t8, 0($t0)
+la $t0, 64($sp)
+addiu $t0, $t0, 4
+li $t8, 11
+sw $t8, 0($t0)
+la $t0, 64($sp)
+addiu $t0, $t0, 8
+li $t8, 12
+sw $t8, 0($t0)
+la $t0, 24($sp)
+lw $s0, 0($t0)
+la $t0, 44($sp)
+addiu $t0, $t0, 8
+lw $s1, 0($t0)
+la $t0, 64($sp)
+addiu $t0, $t0, 4
+lw $s2, 0($t0)
+la $t0, .str.11
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $s4
+move $a0, $s0
 li $v0, 1
 syscall
 
@@ -339,182 +373,230 @@ move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $s6
+move $a0, $s1
 li $v0, 1
 syscall
 
-la $t3, .str.2
-move $a0, $t3
+la $t0, .str.2
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $t8
+move $a0, $s2
 li $v0, 1
 syscall
 
-la $t2, .str.12
-move $a0, $t2
+la $t0, .str.12
+move $a0, $t0
 li $v0, 4
 syscall
 
-la $t5, 112($sp)
-li $t4, 1
-sw $t4, 0($t5)
-la $t6, 112($sp)
-addiu $t6, $t6, 4
-li $t7, 2
-sw $t7, 0($t6)
-la $s0, 112($sp)
-addiu $s0, $s0, 8
-li $s1, 3
-sw $s1, 0($s0)
-la $s2, 112($sp)
-addiu $s2, $s2, 12
-li $s3, 4
-sw $s3, 0($s2)
-la $s5, 112($sp)
-addiu $s5, $s5, 16
-li $s7, 5
-sw $s7, 0($s5)
-la $t9, 152($sp)
-li $t1, 1
-sw $t1, 0($t9)
-la $s4, 152($sp)
-addiu $s4, $s4, 4
-li $t0, 2
-sw $t0, 0($s4)
-la $s6, 152($sp)
-addiu $s6, $s6, 8
-li $t3, 3
-sw $t3, 0($s6)
-la $t8, 152($sp)
-addiu $t8, $t8, 12
-li $t2, 4
-sw $t2, 0($t8)
-la $t4, 172($sp)
-li $t5, 5
-sw $t5, 0($t4)
-la $t7, 172($sp)
-addiu $t7, $t7, 4
-li $t6, 6
-sw $t6, 0($t7)
-la $s1, 172($sp)
-addiu $s1, $s1, 8
-li $s0, 7
-sw $s0, 0($s1)
-la $s3, 172($sp)
-addiu $s3, $s3, 12
-li $s2, 8
-sw $s2, 0($s3)
-la $s7, 172($sp)
-addiu $s7, $s7, 16
-li $s5, 9
-sw $s5, 0($s7)
-li $t1, 1
-sw $t1, 88($sp)
-li $t9, -1
-sw $t9, 88($sp)
+la $t0, 112($sp)
+li $t8, 1
+sw $t8, 0($t0)
+la $t0, 112($sp)
+addiu $t0, $t0, 4
+li $t8, 2
+sw $t8, 0($t0)
+la $t0, 112($sp)
+addiu $t0, $t0, 8
+li $t8, 3
+sw $t8, 0($t0)
+la $t0, 112($sp)
+addiu $t0, $t0, 12
+li $t8, 4
+sw $t8, 0($t0)
+la $t0, 112($sp)
+addiu $t0, $t0, 16
+li $t8, 5
+sw $t8, 0($t0)
+la $t0, 152($sp)
+li $t8, 1
+sw $t8, 0($t0)
+la $t0, 152($sp)
+addiu $t0, $t0, 4
+li $t8, 2
+sw $t8, 0($t0)
+la $t0, 152($sp)
+addiu $t0, $t0, 8
+li $t8, 3
+sw $t8, 0($t0)
+la $t0, 152($sp)
+addiu $t0, $t0, 12
+li $t8, 4
+sw $t8, 0($t0)
+la $t0, 172($sp)
+li $t8, 5
+sw $t8, 0($t0)
+la $t0, 172($sp)
+addiu $t0, $t0, 4
+li $t8, 6
+sw $t8, 0($t0)
+la $t0, 172($sp)
+addiu $t0, $t0, 8
+li $t8, 7
+sw $t8, 0($t0)
+la $t0, 172($sp)
+addiu $t0, $t0, 12
+li $t8, 8
+sw $t8, 0($t0)
+la $t0, 172($sp)
+addiu $t0, $t0, 16
+li $t8, 9
+sw $t8, 0($t0)
+li $t8, 1
+sw $t8, 88($sp)
+li $t8, -1
+sw $t8, 88($sp)
 li $t0, 2
 sw $t0, 88($sp)
-mul $s4, 1, 1
-sw $s4, 88($sp)
-div 1, 1
-mflo $t3
-sw $t3, 88($sp)
-li $s6, 0
-sw $s6, 88($sp)
-div 1, 2
-mfhi $t2
-sw $t2, 88($sp)
-li $t8, 2
-lw $t5, 88($sp)
-mul $t4, $t8, $t5
-sw $t4, 88($sp)
-li $t6, 117
-li $t7, 2
-div $t6, $t7
-mflo $s0
-sw $s0, 88($sp)
-lw $s1, 88($sp)
-mul $s2, $s1, 2
-sw $s2, 88($sp)
-lw $s3, 88($sp)
-addiu $s5, $s3, 2
-sw $s5, 88($sp)
-lw $s7, 88($sp)
-div $s7, 1
-mflo $t1
-sw $t1, 88($sp)
-lw $t9, 88($sp)
-div $t9, 2
+sll $t0, 1, 0
+sw $t0, 88($sp)
+move $t0, 1
+sw $t0, 88($sp)
+li $t0, 0
+sw $t0, 88($sp)
+li $v1, 1
+li $at, 2
+div $v1, $at
 mfhi $t0
 sw $t0, 88($sp)
-lw $s4, 88($sp)
-addiu $t3, $s4, -2
-sw $t3, 88($sp)
-jal func1
-
-lw $s6, 0($sp)
-move $a0, $s6
-sw $s6, 200($sp)
-sw $t2, 256($sp)
-jal func2
-lw $s6, 200($sp)
-lw $t2, 256($sp)
-
-move $t2, $v0
-la $t8, 112($sp)
-move $a0, $t8
+li $t1, 2
+lw $t0, 88($sp)
+mul $t0, $t1, $t0
+sw $t0, 88($sp)
+li $t1, 117
+li $t0, 2
+div $t1, $t0
+mflo $t0
+sw $t0, 88($sp)
+lw $t0, 88($sp)
+sll $t0, $t0, 1
+sw $t0, 88($sp)
+lw $t0, 88($sp)
+addiu $t0, $t0, 2
+sw $t0, 88($sp)
+lw $t0, 88($sp)
+move $t0, $t0
+sw $t0, 88($sp)
+lw $t0, 88($sp)
+li $v1, 2
+div $t0, $v1
+mfhi $t0
+sw $t0, 88($sp)
+lw $t0, 88($sp)
+addiu $t0, $t0, -2
+sw $t0, 88($sp)
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
+sw $t0, 264($sp)
+sw $t1, 260($sp)
 sw $t8, 232($sp)
-jal func3
+jal func1
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
+lw $t0, 264($sp)
+lw $t1, 260($sp)
 lw $t8, 232($sp)
 
-lw $t5, 0($sp)
-lw $t4, 4($sp)
-move $a0, $t5
-move $a1, $t4
-sw $t5, 244($sp)
-sw $t4, 248($sp)
-sw $t6, 240($sp)
-jal func4
-lw $t5, 244($sp)
-lw $t4, 248($sp)
-lw $t6, 240($sp)
-
-move $t6, $v0
-la $t7, 152($sp)
-lw $s0, 0($sp)
-move $a0, $t7
-move $a1, $s0
-sw $t7, 236($sp)
+lw $t0, 0($sp)
+move $a0, $t0
 sw $s0, 224($sp)
-jal func5
-lw $t7, 236($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
+sw $t0, 264($sp)
+sw $t1, 260($sp)
+sw $t8, 232($sp)
+jal func2
 lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
+lw $t0, 264($sp)
+lw $t1, 260($sp)
+lw $t8, 232($sp)
 
-lw $s1, 0($sp)
-seq $s2, $s1, 1
-beq $s2, $zero, main_zty277
+move $t0, $v0
+la $t0, 112($sp)
+move $a0, $t0
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
+sw $t0, 264($sp)
+sw $t1, 260($sp)
+sw $t8, 232($sp)
+jal func3
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
+lw $t0, 264($sp)
+lw $t1, 260($sp)
+lw $t8, 232($sp)
+
+lw $t1, 0($sp)
+lw $t0, 4($sp)
+move $a0, $t1
+move $a1, $t0
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
+sw $t0, 264($sp)
+sw $t1, 260($sp)
+sw $t8, 232($sp)
+jal func4
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
+lw $t0, 264($sp)
+lw $t1, 260($sp)
+lw $t8, 232($sp)
+
+move $t0, $v0
+la $t1, 152($sp)
+lw $t0, 0($sp)
+move $a0, $t1
+move $a1, $t0
+sw $s0, 224($sp)
+sw $s1, 220($sp)
+sw $s2, 216($sp)
+sw $t0, 264($sp)
+sw $t1, 260($sp)
+sw $t8, 232($sp)
+jal func5
+lw $s0, 224($sp)
+lw $s1, 220($sp)
+lw $s2, 216($sp)
+lw $t0, 264($sp)
+lw $t1, 260($sp)
+lw $t8, 232($sp)
+
+lw $t0, 0($sp)
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty277
 j main_zty268
 
 main_zty234:
 lw $t0, i
-seq $t1, $t0, 0
-beq $t1, $zero, main_zty252
+li $v1, 0
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty252
 j main_zty249
 
 main_zty238:
 lw $t0, i
-addiu $t1, $t0, 1
-sw $t1, i
+addiu $t0, $t0, 1
+sw $t0, i
 j main_zty243
 
 main_zty243:
 lw $t0, i
-slt $t1, $t0, 10
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty100
+slti $t0, $t0, 10
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty100
 j main_zty234
 
 main_zty249:
@@ -526,24 +608,25 @@ syscall
 j main_zty238
 
 main_zty252:
-lw $t0, i
-la $t1, .str.8
-move $a0, $t1
+lw $s0, i
+la $t0, .str.8
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $t0
+move $a0, $s0
 li $v0, 1
 syscall
 
-la $t2, .str.9
-move $a0, $t2
+la $t0, .str.9
+move $a0, $t0
 li $v0, 4
 syscall
 
-lw $t3, i
-seq $t4, $t3, 9
-beq $t4, $zero, main_zty264
+lw $t0, i
+li $v1, 9
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty264
 j main_zty261
 
 main_zty259:
@@ -573,8 +656,9 @@ j main_zty271
 
 main_zty271:
 lw $t0, 0($sp)
-seq $t1, $t0, 1
-beq $t1, $zero, main_zty284
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty284
 j main_zty287
 
 main_zty275:
@@ -582,8 +666,9 @@ j main_zty271
 
 main_zty277:
 lw $t0, 4($sp)
-seq $t1, $t0, 2
-beq $t1, $zero, main_zty275
+li $v1, 2
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty275
 j main_zty268
 
 main_zty281:
@@ -595,14 +680,15 @@ syscall
 j main_zty284
 
 main_zty284:
-li $t0, 0
-sw $t0, i
+li $t8, 0
+sw $t8, i
 j main_zty302
 
 main_zty287:
 lw $t0, 4($sp)
-seq $t1, $t0, 2
-beq $t1, $zero, main_zty284
+li $v1, 2
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty284
 j main_zty281
 
 main_zty291:
@@ -610,37 +696,40 @@ j main_zty345
 
 main_zty293:
 lw $t0, i
-seq $t1, $t0, 1
-beq $t1, $zero, main_zty317
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty317
 j main_zty308
 
 main_zty297:
 lw $t0, i
-addiu $t1, $t0, 1
-sw $t1, i
+addiu $t0, $t0, 1
+sw $t0, i
 j main_zty302
 
 main_zty302:
 lw $t0, i
-sle $t1, $t0, 10
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty291
+li $v1, 10
+sle $t0, $t0, $v1
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty291
 j main_zty293
 
 main_zty308:
-lw $t0, i
-la $t1, .str.15
-move $a0, $t1
+lw $s0, i
+la $t0, .str.15
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $t0
+move $a0, $s0
 li $v0, 1
 syscall
 
-la $t2, .str.16
-move $a0, $t2
+la $t0, .str.16
+move $a0, $t0
 li $v0, 4
 syscall
 
@@ -648,20 +737,23 @@ j main_zty297
 
 main_zty313:
 lw $t0, i
-sne $t1, $t0, -2
-beq $t1, $zero, main_zty331
+li $v1, -2
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty331
 j main_zty327
 
 main_zty317:
 lw $t0, 0($sp)
-seq $t1, $t0, 1
-beq $t1, $zero, main_zty313
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty313
 j main_zty321
 
 main_zty321:
 lw $t0, 4($sp)
-seq $t1, $t0, 2
-beq $t1, $zero, main_zty313
+li $v1, 2
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty313
 j main_zty308
 
 main_zty325:
@@ -673,8 +765,8 @@ move $a0, $t0
 li $v0, 1
 syscall
 
-la $t1, .str.17
-move $a0, $t1
+la $t0, .str.17
+move $a0, $t0
 li $v0, 4
 syscall
 
@@ -690,30 +782,31 @@ main_zty335:
 j main_zty297
 
 main_zty337:
-li $t0, 0
-sw $t0, i
+li $t8, 0
+sw $t8, i
 j main_zty354
 
 main_zty340:
 j main_zty337
 
 main_zty342:
-li $t0, 0
-sw $t0, 88($sp)
+li $t8, 0
+sw $t8, 88($sp)
 j main_zty345
 
 main_zty345:
 lw $t0, 0($sp)
-seq $t1, $t0, 1
-beq $t1, $zero, main_zty337
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty337
 j main_zty340
 
 main_zty349:
 j main_zty342
 
 main_zty351:
-li $t0, 0
-sw $t0, i
+li $t8, 0
+sw $t8, i
 j main_zty370
 
 main_zty354:
@@ -721,16 +814,16 @@ j main_zty351
 
 main_zty356:
 lw $t0, i
-addiu $t1, $t0, 1
-sw $t1, i
+addiu $t0, $t0, 1
+sw $t0, i
 j main_zty354
 
 main_zty361:
 j main_zty356
 
 main_zty363:
-li $t0, 0
-sw $t0, i
+li $t8, 0
+sw $t8, i
 j main_zty380
 
 main_zty366:
@@ -741,10 +834,11 @@ j main_zty370
 
 main_zty370:
 lw $t0, i
-slt $t1, $t0, 10
-move $t2, $t1
-sne $t3, $t2, 0
-beq $t3, $zero, main_zty363
+slti $t0, $t0, 10
+move $t0, $t0
+li $v1, 0
+sne $t0, $t0, $v1
+beq $t0, $zero, main_zty363
 j main_zty366
 
 main_zty376:
@@ -773,8 +867,9 @@ j main_zty392
 
 main_zty392:
 lw $t0, 0($sp)
-seq $t1, $t0, 1
-beq $t1, $zero, main_zty386
+li $v1, 1
+seq $t0, $t0, $v1
+beq $t0, $zero, main_zty386
 j main_zty388
 
 main_zty396:
@@ -787,8 +882,8 @@ main_zty400:
 j main_zty398
 
 main_zty402:
-li $t0, 0
-sw $t0, 88($sp)
+li $t8, 0
+sw $t8, 88($sp)
 j main_zty400
 
 main_zty405:
@@ -800,38 +895,38 @@ syscall
 
 move $t0, $v0
 sw $t0, 88($sp)
-lw $t1, 88($sp)
-move $a0, $t1
+lw $t0, 88($sp)
+move $a0, $t0
 li $v0, 1
 syscall
 
-la $t2, .str.12
-move $a0, $t2
+la $t0, .str.12
+move $a0, $t0
 li $v0, 4
 syscall
 
 li $v0, 5
 syscall
 
-move $t3, $v0
-sw $t3, 92($sp)
-lw $t4, 92($sp)
-move $a0, $t4
+move $t0, $v0
+sw $t0, 92($sp)
+lw $t0, 92($sp)
+move $a0, $t0
 li $v0, 1
 syscall
 
 li $v0, 5
 syscall
 
-move $t5, $v0
-sw $t5, 92($sp)
-lw $t6, 92($sp)
-move $a0, $t6
+move $t0, $v0
+sw $t0, 92($sp)
+lw $t0, 92($sp)
+move $a0, $t0
 li $v0, 1
 syscall
 
-la $t7, .str.12
-move $a0, $t7
+la $t0, .str.12
+move $a0, $t0
 li $v0, 4
 syscall
 
@@ -869,18 +964,18 @@ addi $sp, $sp, -88
 sw $ra, 84($sp)
 
 func_zty0:
-li $t0, 0
-sw $t0, 0($sp)
-li $t1, 0
-sw $t1, 4($sp)
-li $t2, 0
-sw $t2, 8($sp)
+li $t8, 0
+sw $t8, 0($sp)
+li $t8, 0
+sw $t8, 4($sp)
+li $t8, 0
+sw $t8, 8($sp)
 j func_zty13
 
 func_zty8:
 lw $t0, global_var
-addiu $t1, $t0, 1
-sw $t1, global_var
+addiu $t0, $t0, 1
+sw $t0, global_var
 li $v0, 1
 lw $ra, 84($sp)
 addi $sp, $sp, 88
@@ -891,14 +986,14 @@ j func_zty15
 
 func_zty15:
 lw $t0, 0($sp)
-addiu $t1, $t0, 1
-sw $t1, 0($sp)
-lw $t2, 4($sp)
-addiu $t3, $t2, 2
-sw $t3, 4($sp)
-lw $t4, 8($sp)
-addiu $t5, $t4, 3
-sw $t5, 8($sp)
+addiu $t0, $t0, 1
+sw $t0, 0($sp)
+lw $t0, 4($sp)
+addiu $t0, $t0, 2
+sw $t0, 4($sp)
+lw $t0, 8($sp)
+addiu $t0, $t0, 3
+sw $t0, 8($sp)
 j func_zty13
 
 func1:
@@ -926,13 +1021,13 @@ move $a0, $t0
 li $v0, 1
 syscall
 
-la $t1, .str.1
-move $a0, $t1
+la $t0, .str.1
+move $a0, $t0
 li $v0, 4
 syscall
 
-lw $t2, 0($sp)
-move $v0, $t2
+lw $t0, 0($sp)
+move $v0, $t0
 lw $ra, 76($sp)
 addi $sp, $sp, 80
 jr $ra
@@ -944,14 +1039,14 @@ sw $ra, 76($sp)
 func3_zty1:
 sw $a0, 0($sp)
 lw $t0, 0($sp)
-la $t1, 0($t0)
-lw $t2, 0($t1)
-move $a0, $t2
+la $t0, 0($t0)
+lw $t0, 0($t0)
+move $a0, $t0
 li $v0, 1
 syscall
 
-la $t3, .str.1
-move $a0, $t3
+la $t0, .str.1
+move $a0, $t0
 li $v0, 4
 syscall
 
@@ -967,27 +1062,27 @@ func4_zty2:
 sw $a0, 0($sp)
 sw $a1, 4($sp)
 lw $t0, 0($sp)
-lw $t1, 4($sp)
+lw $s0, 4($sp)
 move $a0, $t0
 li $v0, 1
 syscall
 
-la $t2, .str.2
-move $a0, $t2
+la $t0, .str.2
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $t1
+move $a0, $s0
 li $v0, 1
 syscall
 
-la $t3, .str.1
-move $a0, $t3
+la $t0, .str.1
+move $a0, $t0
 li $v0, 4
 syscall
 
-lw $t4, 4($sp)
-move $v0, $t4
+lw $t0, 4($sp)
+move $v0, $t0
 lw $ra, 80($sp)
 addi $sp, $sp, 84
 jr $ra
@@ -1000,24 +1095,24 @@ func5_zty2:
 sw $a0, 0($sp)
 sw $a1, 4($sp)
 lw $t0, 0($sp)
-la $t1, 0($t0)
-lw $t2, 0($t1)
-lw $t3, 4($sp)
-move $a0, $t2
+la $t0, 0($t0)
+lw $t0, 0($t0)
+lw $s0, 4($sp)
+move $a0, $t0
 li $v0, 1
 syscall
 
-la $t4, .str.2
-move $a0, $t4
+la $t0, .str.2
+move $a0, $t0
 li $v0, 4
 syscall
 
-move $a0, $t3
+move $a0, $s0
 li $v0, 1
 syscall
 
-la $t5, .str.1
-move $a0, $t5
+la $t0, .str.1
+move $a0, $t0
 li $v0, 4
 syscall
 
